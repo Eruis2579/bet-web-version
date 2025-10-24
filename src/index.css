@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.ant-select-single {
+    font-size: 16px;
+    height: 56px;
+}
+
+.ant-select-single.ant-select-lg {
+    font-size: 14px;
+    height: 56px;
+}

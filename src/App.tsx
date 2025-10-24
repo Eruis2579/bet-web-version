@@ -1,14 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './components/Login';
-import Register from './components/Register';
-import Layout from './components/Layout';
 import axios from 'axios';
-import { ConfigProvider, notification, theme } from "antd";
+import { ConfigProvider, Layout, notification, theme } from "antd";
 import { AuthProvider } from './contexts/AuthContext';
-import ProtectedRoute from './utils/ProtectedRoute';
 import Dashboard from './components/Dashboard';
-import Bet from './components/Bet';
-import History from './components/History';
 interface Message {
   success: (msg: string) => void,
   error: (msg: string) => void,
@@ -20,8 +14,8 @@ declare global {
   }
 }
 
-axios.defaults.baseURL = "/api"
-// axios.defaults.baseURL = "http://172.16.3.164:9090/api"
+// axios.defaults.baseURL = "/api"
+axios.defaults.baseURL = "http://144.172.91.194:9090/api"
 
 function App() {
   const [api, contextHolder] = notification.useNotification();
@@ -54,45 +48,19 @@ function App() {
       {contextHolder}
       <ConfigProvider
         theme={{
-          algorithm: theme.darkAlgorithm,
           token: {
-            colorPrimary: '#10b981',
-            colorBgContainer: '#1e293b',
-            colorBgElevated: '#334155',
-            colorBorder: '#475569',
-            colorText: '#ffffff',
-            colorTextSecondary: '#9ca3af',
+            colorPrimary: '#1890ff',
           },
         }}
       >
         <AuthProvider>
-          <Router basename='/welcome'>
+          <Router basename='/bet'>
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/login" element={
-                <Layout>
-                  <Login />
-                </Layout>
-              } />
-              <Route path="/register" element={
-                <Layout>
-                  <Register />
-                </Layout>
-              } />
               <Route path="/dashboard" element={
-                <ProtectedRoute>
+                <Layout>
                   <Dashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/bet" element={
-                <ProtectedRoute>
-                  <Bet />
-                </ProtectedRoute>
-              } />
-              <Route path="/history" element={
-                <ProtectedRoute>
-                  <History />
-                </ProtectedRoute>
+                </Layout>
               } />
             </Routes>
           </Router>

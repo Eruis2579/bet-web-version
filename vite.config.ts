@@ -7,7 +7,7 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
-  base: '/welcome',
+  base: '/bet',
   server: {
     host: '0.0.0.0', // Binds to all interfaces, allowing access from other devices
     port: 5177, // Default port, can be changed if needed
