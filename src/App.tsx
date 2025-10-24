@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
-import { ConfigProvider, Layout, notification, theme } from "antd";
+import { ConfigProvider, Layout, notification} from "antd";
 import { AuthProvider } from './contexts/AuthContext';
 import Dashboard from './components/Dashboard';
 interface Message {
