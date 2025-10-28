@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Select, InputNumber, Button, message } from 'antd';
 import axios from 'axios';
 
@@ -14,6 +14,14 @@ interface BetOption {
 
 interface BetFormProps {
     onBetPlaced: (betData: BetPlacementData) => void;
+    onAddToBetslip: (betData: {
+        betName: string;
+        siteName: string;
+        siteSkin: string;
+        odds?: string;
+        points?: number;
+        betData: any;
+    }) => void;
     siteName: string;
     siteSkin: string;
     pairIndex?: number;
@@ -28,16 +36,14 @@ interface BetPlacementData {
     siteSkin: string;
 }
 
-const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, siteName, siteSkin, pairIndex = 0 }) => {
+const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName, siteSkin, pairIndex = 0 }) => {
     const [searchOptions, setSearchOptions] = useState<BetOption[]>([]);
     const [loading, setLoading] = useState(false);
+    const [betData, setBetData] = useState<BetOption[]>([]);
     const [selectedBet, setSelectedBet] = useState<string | null>(null);
     const [amount, setAmount] = useState<number>(0);
     const [placing, setPlacing] = useState(false);
 
-    useEffect(() => {
-        console.log(selectedBet);
-    }, [selectedBet]);
     const searchBets = useCallback(async (searchQuery: string) => {
         if (!searchQuery || searchQuery.length === 0) {
             setSearchOptions([]);
@@ -52,6 +58,7 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, siteName, siteSkin, pair
             }
         }).then(res => {
             console.log(res.data);
+            setBetData(res.data);
             setSearchOptions(res.data.map((bet: BetOption) => ({
                 label: <div className="text-sm text-gray-500 flex flex-col gap-1">
                     <span className="font-bold">{bet.title}</span>
@@ -59,8 +66,8 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, siteName, siteSkin, pair
                 </div>,
                 value: bet.title,
             })));
-        }).catch(err => {
-            window.SM.error(err.response.data.message);
+        }).catch(() => {
+            window.SM.error("Failed to search bets");
         }).finally(() => {
             setLoading(false);
         });
@@ -74,14 +81,14 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, siteName, siteSkin, pair
         }
     }, [searchBets]);
 
-     const handleSelect = useCallback((value: string) => {
-         setSelectedBet(value);
-     }, []);
+    const handleSelect = useCallback((value: string) => {
+        setSelectedBet(value);
+    }, []);
 
-     const handleClear = useCallback(() => {
-         setSelectedBet(null);
-         setSearchOptions([]);
-     }, []);
+    const handleClear = useCallback(() => {
+        setSelectedBet(null);
+        setSearchOptions([]);
+    }, []);
 
     const handlePlaceBet = useCallback(async () => {
         if (!selectedBet) {
@@ -95,9 +102,54 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, siteName, siteSkin, pair
         }
 
         setPlacing(true);
-        console.log("Asdasdasdasd");
+        const betSlip = betData.find(bet => bet.title === selectedBet);
+        if (!betSlip) {
+            message.warning('Please select a valid bet');
+            return;
+        }
+        console.log(betSlip,amount);
+        
+        axios.post(`/general/bet`, {
+            betSlip: betSlip,
+            amount: amount,
+            skin: siteSkin
+        }).then(res => {
+            console.log(res.data);
+            window.SM.success('Bet placed successfully');
+        }).catch(() => {
+            window.SM.error("Failed to place bet");
+        }).finally(() => {
+            setPlacing(false);
+        });
 
     }, [selectedBet, amount, pairIndex, siteName, onBetPlaced]);
+
+    const handleAddToBetslip = useCallback(() => {
+        if (!selectedBet) {
+            message.warning('Please select a bet');
+            return;
+        }
+
+        const betSlip = betData.find(bet => bet.title === selectedBet);
+        if (!betSlip) {
+            message.warning('Please select a valid bet');
+            return;
+        }
+
+        onAddToBetslip({
+            betName: betSlip.title,
+            siteName: siteName,
+            siteSkin: siteSkin,
+            odds: betSlip.odds,
+            points: betSlip.points,
+            betData: betSlip
+        });
+
+        // Reset form after adding to betslip
+        setSelectedBet(null);
+        setAmount(0);
+        setSearchOptions([]);
+    }, [selectedBet, betData, siteName, siteSkin, onAddToBetslip]);
 
     return (
         <div className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
@@ -111,21 +163,21 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, siteName, siteSkin, pair
                             Bet Selection
                         </label>
                     </div>
-                     <Select
-                         showSearch
-                         placeholder="Search for a bet..."
-                         className="w-full"
-                         options={searchOptions}
-                         onSearch={handleSearch}
-                         onSelect={handleSelect}
-                         onClear={handleClear}
-                         loading={loading}
-                         filterOption={false}
-                         notFoundContent={loading ? 'Searching...' : 'Type to search bets'}
-                         allowClear
-                         value={selectedBet}
-                         size="large"
-                     />
+                    <Select
+                        showSearch
+                        placeholder="Search for a bet..."
+                        className="w-full"
+                        options={searchOptions}
+                        onSearch={handleSearch}
+                        onSelect={handleSelect}
+                        onClear={handleClear}
+                        loading={loading}
+                        filterOption={false}
+                        notFoundContent={loading ? 'Searching...' : 'Type to search bets'}
+                        allowClear
+                        value={selectedBet}
+                        size="large"
+                    />
                 </div>
                 <div className="flex gap-3">
                     <div className="flex-1">
@@ -142,18 +194,26 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, siteName, siteSkin, pair
                             size="large"
                         />
                     </div>
-                    <div className="flex items-end">
-                        <Button
-                            type="primary"
-                            onClick={handlePlaceBet}
-                            loading={placing}
-                            disabled={!selectedBet || !amount || amount <= 0}
-                            size="large"
-                            className="min-w-[120px]"
-                        >
-                            Place Bet
-                        </Button>
-                    </div>
+                </div>
+                <div className="flex gap-2">
+                    <Button
+                        onClick={handleAddToBetslip}
+                        disabled={!selectedBet}
+                        size="large"
+                        className="flex-1"
+                    >
+                        Add to Betslip
+                    </Button>
+                    <Button
+                        type="primary"
+                        onClick={handlePlaceBet}
+                        loading={placing}
+                        disabled={!selectedBet || !amount || amount <= 0}
+                        size="large"
+                        className="flex-1"
+                    >
+                        Place Bet
+                    </Button>
                 </div>
             </div>
 
@@ -166,20 +226,20 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, siteName, siteSkin, pair
                             {siteName}
                         </label>
                     </div>
-                     <Select
-                         showSearch
-                         placeholder="Search for a bet..."
-                         className="w-full"
-                         options={searchOptions}
-                         onSearch={handleSearch}
-                         onSelect={handleSelect}
-                         onClear={handleClear}
-                         loading={loading}
-                         filterOption={false}
-                         notFoundContent={loading ? 'Searching...' : 'Type to search bets'}
-                         allowClear
-                         value={selectedBet}
-                     />
+                    <Select
+                        showSearch
+                        placeholder="Search for a bet..."
+                        className="w-full"
+                        options={searchOptions}
+                        onSearch={handleSearch}
+                        onSelect={handleSelect}
+                        onClear={handleClear}
+                        loading={loading}
+                        filterOption={false}
+                        notFoundContent={loading ? 'Searching...' : 'Type to search bets'}
+                        allowClear
+                        value={selectedBet}
+                    />
                 </div>
 
                 {/* Amount Input */}
@@ -197,8 +257,15 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, siteName, siteSkin, pair
                     />
                 </div>
 
-                {/* Place Bet Button */}
-                <div className="pt-7 flex-shrink-0">
+                {/* Buttons */}
+                <div className="pt-7 flex-shrink-0 flex gap-2">
+                    <Button
+                        onClick={handleAddToBetslip}
+                        disabled={!selectedBet}
+                        className="min-w-[120px]"
+                    >
+                        Add to Betslip
+                    </Button>
                     <Button
                         type="primary"
                         onClick={handlePlaceBet}

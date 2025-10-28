@@ -13,6 +13,6 @@ export default defineConfig({
     port: 5177, // Default port, can be changed if needed
   },
   build: {
-    outDir: '../backend/dist' // Output directory
+    outDir: './dist' // Output directory
   },
 });
