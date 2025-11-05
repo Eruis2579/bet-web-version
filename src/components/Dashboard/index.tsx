@@ -16,10 +16,13 @@ interface BetPlacementData {
 }
 
 const BET_SITES = [
-  {name: "Action", skin: "Action"}
-, {name: "Godds", skin: "Godds"}
-, {name: "Strikerich", skin: "Strikerich"}
-, {name: "Highroller", skin: "Highroller"}
+  {name: "Action", skin: "Action"}, 
+  {name: "Godds", skin: "Godds"},
+  {name: "Highroller", skin: "Highroller"},
+  {name: "Fesster", skin: "Fesster"},
+  {name: "Betwindycity", skin: "Betwindycity"},
+  {name: "Abcwager", skin: "Abcwager"},
+  {name: "Strikerich", skin: "Strikerich"},
 ] as const;
 
 const Dashboard: React.FC = () => {
@@ -88,31 +91,25 @@ const Dashboard: React.FC = () => {
     try {
       // Place all bets sequentially
       for (const item of betslipItems) {
-        await axios.post('/general/bet', {
+        axios.post('/general/bet', {
           betSlip: item.betData,
           amount: item.amount,
           skin: item.siteSkin
+        }).then(res => {
+          console.log(res.data);
+          if(res.data[0].msg==="Success") {
+            window.SM.success(`${item.betData.title}: Bet placed successfully`);
+          } else {
+            window.SM.error(`${item.betData.title}: ${res.data[0].msg}`);
+          }
+        }).catch(() => {
+          window.SM.error(`Failed to place bet`);
         });
-        
-        // Add to placed bets
-        const placedBet: BetPlacementData = {
-          betId: item.id,
-          betName: item.betName,
-          amount: item.amount,
-          pairIndex: 0,
-          siteName: item.siteName
-        };
-        setPlacedBets(prev => [...prev, placedBet]);
       }
-      
-      message.success(`Successfully placed ${betslipItems.length} bets`);
-      setBetslipItems([]); // Clear betslip after successful placement
-      
+      setBetslipItems([]);
+      setPlacingAllBets(false);
     } catch (error) {
       message.error('Failed to place some bets');
-      console.error('Error placing bets:', error);
-    } finally {
-      setPlacingAllBets(false);
     }
   }, [betslipItems]);
 

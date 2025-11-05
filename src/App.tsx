@@ -33,14 +33,14 @@ function App() {
       description: `${msg}`,
       showProgress: true,
       pauseOnHover: false,
-      duration: 2
+      duration: 5
     }),
     warning: (msg: string) => api.warning({
       message: "Warning",
       description: `${msg}`,
       showProgress: true,
       pauseOnHover: false,
-      duration: 2
+      duration: 5
     }),
   }
   return (

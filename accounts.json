@@ -1,0 +1,88 @@
+{
+  "Action": [
+    {
+      "username": "WWPLAYER1",
+      "password": "123",
+      "balance": 0,
+      "available": 0,
+      "atrisk": 0,
+      "sessionId": "cb2vuig0qjqalazdewwbqju5"
+    },
+    {
+      "username": "WWPLAYER2",
+      "password": "123",
+      "balance": 0,
+      "available": 0,
+      "atrisk": 0,
+      "sessionId": "cb2vuig0qjqalazdewwbqju5"
+    },
+    {
+      "username": "WWPLAYER3",
+      "password": "123",
+      "balance": 0,
+      "available": 0,
+      "atrisk": 0,
+      "sessionId": "cb2vuig0qjqalazdewwbqju5"
+    }
+  ],
+  "Godds": [
+    {
+      "username": "wp5023",
+      "password": "Giants",
+      "playerId": "1152080",
+      "profileId": "21698",
+      "profileLimitId": "29373",
+      "balance": 0,
+      "available": 0,
+      "atrisk": 0
+    }
+  ],
+  "Highroller": [
+    {
+      "username": "WWG15",
+      "password": "1",
+      "balance": 0,
+      "available": 0,
+      "atrisk": 0
+    }
+  ],
+  "Strikerich": [
+    {
+      "username": "RD341",
+      "password": "R1",
+      "balance": 0,
+      "available": 0,
+      "atrisk": 0
+    }
+  ],
+  "Fesster": [
+    {
+      "username": "jay",
+      "password": "jay",
+      "playerId": 5,
+      "balance": 0,
+      "available": 0,
+      "atrisk": 0
+    }
+  ],
+  "Betwindycity": [
+    {
+      "username": "Doc205",
+      "password": "christian",
+      "balance": 0,
+      "available": 0,
+      "atrisk": 0,
+      "token": null
+    }
+  ],
+  "Abcwager": [
+    {
+      "username": "Qr3834",
+      "password": "TEST",
+      "balance": 0,
+      "available": 0,
+      "atrisk": 0,
+      "sessionId": "b02qorqstxpmui2mfe51nt45"
+    }
+  ]
+}

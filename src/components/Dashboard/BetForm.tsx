@@ -179,22 +179,6 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
                         size="large"
                     />
                 </div>
-                <div className="flex gap-3">
-                    <div className="flex-1">
-                        <label className="block text-sm font-medium mb-2 text-gray-700">
-                            Amount ($)
-                        </label>
-                        <InputNumber
-                            className="w-full"
-                            min={0}
-                            step={10}
-                            value={amount}
-                            onChange={(value: number | null) => setAmount(value || 0)}
-                            placeholder="Enter amount"
-                            size="large"
-                        />
-                    </div>
-                </div>
                 <div className="flex gap-2">
                     <Button
                         onClick={handleAddToBetslip}
@@ -203,16 +187,6 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
                         className="flex-1"
                     >
                         Add to Betslip
-                    </Button>
-                    <Button
-                        type="primary"
-                        onClick={handlePlaceBet}
-                        loading={placing}
-                        disabled={!selectedBet || !amount || amount <= 0}
-                        size="large"
-                        className="flex-1"
-                    >
-                        Place Bet
                     </Button>
                 </div>
             </div>
@@ -243,19 +217,6 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
                 </div>
 
                 {/* Amount Input */}
-                <div className="w-48 lg:w-56 xl:w-64 flex-shrink-0">
-                    <label className="block text-sm font-medium mb-2 text-gray-700">
-                        Amount ($)
-                    </label>
-                    <InputNumber
-                        className="w-full"
-                        min={0}
-                        step={10}
-                        value={amount}
-                        onChange={(value: number | null) => setAmount(value || 0)}
-                        placeholder="Enter amount"
-                    />
-                </div>
 
                 {/* Buttons */}
                 <div className="pt-7 flex-shrink-0 flex gap-2">
@@ -265,15 +226,6 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
                         className="min-w-[120px]"
                     >
                         Add to Betslip
-                    </Button>
-                    <Button
-                        type="primary"
-                        onClick={handlePlaceBet}
-                        loading={placing}
-                        disabled={!selectedBet || !amount || amount <= 0}
-                        className="min-w-[120px]"
-                    >
-                        Place Bet
                     </Button>
                 </div>
             </div>
