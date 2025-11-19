@@ -22,9 +22,16 @@ export default function () {
                                 <h1 className="hidden md:block text-2xl font-bold text-green-500">Sports Betting - Auto Bet</h1>
                             </div>
                         </div>
-
-                        <div className="flex items-center space-x-1 sm:space-x-4">
-                            <span className="text-black">{time.toUTCString()}</span>
+                        
+                        <div className="flex items-center space-x-3">
+                            <button
+                                type="button"
+                                onClick={() => navigate('/manage')}
+                                className="px-3 py-1 text-sm font-medium text-white bg-green-500 rounded-md shadow hover:bg-green-600 transition"
+                            >
+                                Manage
+                            </button>
+                            <span className="text-sm font-medium text-black">{time.toUTCString()}</span>
                         </div>
                     </div>
                 </div>

@@ -1,8 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
-import { ConfigProvider, Layout, notification} from "antd";
+import { ConfigProvider, Layout, notification, App as AntdApp } from "antd";
 import { AuthProvider } from './contexts/AuthContext';
 import Dashboard from './components/Dashboard';
+import Manage from './components/Manage';
 interface Message {
   success: (msg: string) => void,
   error: (msg: string) => void,
@@ -15,9 +16,9 @@ declare global {
 }
 
 // axios.defaults.baseURL = "/api"
-axios.defaults.baseURL = "http://144.172.91.194:9090/api"
+axios.defaults.baseURL = "http://144.172.91.194:8088/api"
 
-function App() {
+const AppContent = () => {
   const [api, contextHolder] = notification.useNotification();
 
   window.SM = {
@@ -43,30 +44,44 @@ function App() {
       duration: 5
     }),
   }
+
   return (
     <>
       {contextHolder}
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: '#1890ff',
-          },
-        }}
-      >
-        <AuthProvider>
-          <Router basename='/bet'>
-            <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={
-                <Layout>
-                  <Dashboard />
-                </Layout>
-              } />
-            </Routes>
-          </Router>
-        </AuthProvider>
-      </ConfigProvider>
+      <AuthProvider>
+        <Router basename='/bet'>
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={
+              <Layout>
+                <Dashboard />
+              </Layout>
+            } />
+            <Route path="/manage" element={
+              <Layout>
+                <Manage />
+              </Layout>
+            } />
+          </Routes>
+        </Router>
+      </AuthProvider>
     </>
+  );
+}
+
+function App() {
+  return (
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#1890ff',
+        },
+      }}
+    >
+      <AntdApp>
+        <AppContent />
+      </AntdApp>
+    </ConfigProvider>
   );
 }
 

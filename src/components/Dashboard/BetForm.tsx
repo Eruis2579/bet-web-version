@@ -71,7 +71,7 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
         }).finally(() => {
             setLoading(false);
         });
-    }, []);
+    }, [siteSkin]);
 
     const handleSearch = useCallback((value: string) => {
         if (value && value.length > 1) {
