@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Select, InputNumber, Button, message } from 'antd';
+import { Select, Button, message } from 'antd';
 import axios from 'axios';
 
 interface BetOption {
