@@ -205,21 +205,21 @@ const Manage: React.FC = () => {
         dataIndex: 'password',
         key: 'password',
       },
-      {
-        title: 'Player Id',
-        dataIndex: 'playerId',
-        key: 'playerId',
-      },
-      {
-        title: 'Profile Id',
-        dataIndex: 'profileId',
-        key: 'profileId',
-      },
-      {
-        title: 'Profile Limit Id',
-        dataIndex: 'profileLimitId',
-        key: 'profileLimitId',
-      },
+      // {
+      //   title: 'Player Id',
+      //   dataIndex: 'playerId',
+      //   key: 'playerId',
+      // },
+      // {
+      //   title: 'Profile Id',
+      //   dataIndex: 'profileId',
+      //   key: 'profileId',
+      // },
+      // {
+      //   title: 'Profile Limit Id',
+      //   dataIndex: 'profileLimitId',
+      //   key: 'profileLimitId',
+      // },
       {
         title: 'Balance',
         dataIndex: 'balance',

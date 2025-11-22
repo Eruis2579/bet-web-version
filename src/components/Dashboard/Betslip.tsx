@@ -77,7 +77,7 @@ const Betslip: React.FC<BetslipProps> = ({
                     <div className="flex-1">
                       <Text strong className="text-sm">{item.betName}</Text>
                       <br />
-                      <Tag color="blue">{item.siteName}</Tag>
+                      <Tag color="blue">{item.siteSkin}</Tag>
                       {item.odds && (
                         <Tag color="green">
                           Odds: {item.odds}

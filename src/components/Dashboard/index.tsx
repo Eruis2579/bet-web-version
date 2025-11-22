@@ -158,7 +158,7 @@ const Dashboard: React.FC = () => {
         window.SM.error('Invalid response format from server');
       }
     } catch (error: any) {
-      window.SM.error(error?.response?.data?.message || 'Failed to submit');
+      window.SM.error(error?.response?.data || 'Failed to submit');
     } finally {
       setSubmittingTelegram(false);
     }
@@ -192,7 +192,7 @@ const Dashboard: React.FC = () => {
       setTelegramResponseData(null);
       setSelectedMsgRows([]);
     } catch (error: any) {
-      window.SM.error(error?.response?.data?.message || 'Failed to place bet');
+      window.SM.error(error?.response?.data || 'Failed to place bet');
       fetchHistory();
     } finally {
       setPlacingTelegramBet(false);
@@ -210,12 +210,12 @@ const Dashboard: React.FC = () => {
     try {
       const response = await axios.get('/general/history');
       if (Array.isArray(response.data)) {
-        setHistoryData(response.data);
+        setHistoryData(response.data.reverse());
       } else {
         setHistoryData([]);
       }
     } catch (error: any) {
-      window.SM.error(error?.response?.data?.message || 'Failed to load history');
+      window.SM.error(error?.response?.data || 'Failed to load history');
     } finally {
       setHistoryLoading(false);
     }
@@ -249,6 +249,12 @@ const Dashboard: React.FC = () => {
         title: "Kind",
         dataIndex: "kind",
         key: "kind",
+        render: (text: string) => <Text>{text}</Text>,
+      },
+      {
+        title: "Service",
+        dataIndex: "service",
+        key: "service",
         render: (text: string) => <Text>{text}</Text>,
       },
       {
@@ -293,7 +299,7 @@ const Dashboard: React.FC = () => {
             {/* Row 2: Web Version */}
             <Card title="Web Version">
               <Space direction="vertical" size="large" className='w-full'>
-                <Select
+                {/* <Select
                   className='w-full'
                   value={selectedSite.name}
                   onChange={(value) => {
@@ -305,7 +311,7 @@ const Dashboard: React.FC = () => {
                     label: site.name,
                     value: site.name,
                   }))}
-                />
+                /> */}
 
                 <BetForm
                   pairIndex={BET_SITES.findIndex(site => site.name === selectedSite.name) || 0}
@@ -360,7 +366,7 @@ const Dashboard: React.FC = () => {
               >
                 <Table
                   columns={historyColumns}
-                  dataSource={historyData.map((item, index) => ({
+                  dataSource={historyData.map((item: any, index: number) => ({
                     ...item,
                     key: item.id ?? index,
                   }))}
@@ -416,7 +422,7 @@ const Dashboard: React.FC = () => {
                 },
               }}
               columns={telegramTableColumns}
-              dataSource={telegramResponseData.msg.map((item, index) => ({
+              dataSource={telegramResponseData.msg.map((item: any, index: number) => ({
                 ...item,
                 key: index,
               }))}

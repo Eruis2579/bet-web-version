@@ -10,6 +10,7 @@ interface BetOption {
     points: number;
     sport: string;
     title: string;
+    service: string;
 }
 
 interface BetFormProps {
@@ -61,7 +62,7 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
             setBetData(res.data);
             setSearchOptions(res.data.map((bet: BetOption) => ({
                 label: <div className="text-sm text-gray-500 flex flex-col gap-1">
-                    <span className="font-bold">{bet.title}</span>
+                    <span className="font-bold">[{bet.service}] {bet.title}</span>
                     <span className="text-gray-500">{bet.desc}</span>
                 </div>,
                 value: bet.title,
@@ -138,8 +139,8 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
 
         onAddToBetslip({
             betName: betSlip.title,
-            siteName: siteName,
-            siteSkin: siteSkin,
+            siteName: betSlip.service,
+            siteSkin: betSlip.service,
             odds: betSlip.odds,
             points: betSlip.points,
             betData: betSlip
@@ -154,9 +155,9 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
     return (
         <div className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
             <div className="block sm:hidden space-y-4">
-                <div className="flex items-center justify-between">
+                {/* <div className="flex items-center justify-between">
                     <h3 className="text-lg font-semibold text-gray-800">{siteName}</h3>
-                </div>
+                </div> */}
                 <div className="w-full">
                     <div className="flex items-center justify-between mb-2">
                         <label className="block text-sm font-medium text-gray-700">
@@ -197,7 +198,7 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-2">
                         <label className="block text-sm font-medium text-gray-700">
-                            {siteName}
+                            Bet Selection
                         </label>
                     </div>
                     <Select
