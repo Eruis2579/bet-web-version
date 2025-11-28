@@ -62,6 +62,7 @@ const Dashboard: React.FC = () => {
     odds?: string;
     points?: number;
     betData: any;
+    suffix?: string | null;
   }) => {
     const id = `${betData.siteName}-${Date.now()}-${Math.random()}`;
     const newItem: BetslipItem = {
@@ -72,11 +73,12 @@ const Dashboard: React.FC = () => {
       odds: betData.odds,
       points: betData.points,
       amount: 0,
-      betData: betData.betData
+      betData: betData.betData,
+      suffix: betData.suffix
     };
 
     setBetslipItems(prev => [...prev, newItem]);
-    message.success(`Added "${betData.betName}" to betslip`);
+    message.success(`Added "${betData.betName} ${betData.suffix}" to betslip`);
   }, []);
 
   const handleRemoveFromBetslip = useCallback((id: string) => {

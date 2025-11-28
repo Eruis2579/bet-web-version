@@ -13,6 +13,7 @@ export interface BetslipItem {
   points?: number;
   amount: number;
   betData: any; // Store original bet data for placement
+  suffix?: string | null;
 }
 
 interface BetslipProps {
@@ -75,7 +76,7 @@ const Betslip: React.FC<BetslipProps> = ({
                 <div className="w-full">
                   <div className="flex justify-between items-start mb-2">
                     <div className="flex-1">
-                      <Text strong className="text-sm">{item.betName}</Text>
+                      <Text strong className="text-sm">{item.betName} {item.suffix}</Text>
                       <br />
                       <Tag color="blue">{item.siteSkin}</Tag>
                       {item.odds && (
