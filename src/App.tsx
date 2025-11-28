@@ -15,8 +15,8 @@ declare global {
   }
 }
 
-axios.defaults.baseURL = "/api"
-// axios.defaults.baseURL = "http://144.172.91.194:8088/api"
+// axios.defaults.baseURL = "/api"
+axios.defaults.baseURL = "http://144.172.91.194:8088/api"
 
 const AppContent = () => {
   const [api, contextHolder] = notification.useNotification();

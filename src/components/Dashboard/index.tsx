@@ -276,7 +276,7 @@ const Dashboard: React.FC = () => {
         <div className="min-h-screen bg-gray-50 py-8">
           <div className="space-y-6">
             {/* Row 1: Telegram Version */}
-            <Card title="Telegram Version">
+            {/* <Card title="Telegram Version">
               <Space.Compact className='w-full'>
                 <Input.TextArea
                   placeholder="Enter input value"
@@ -294,10 +294,10 @@ const Dashboard: React.FC = () => {
               >
                 Submit
               </Button>
-            </Card>
+            </Card> */}
 
             {/* Row 2: Web Version */}
-            <Card title="Web Version">
+            <Card title="Structured Bet">
               <Space direction="vertical" size="large" className='w-full'>
                 {/* <Select
                   className='w-full'
@@ -321,7 +321,7 @@ const Dashboard: React.FC = () => {
                   siteSkin={selectedSite.skin}
                 />
 
-                {placedBets.length > 0 && (
+                {/* {placedBets.length > 0 && (
                   <Card type="inner" title="Recent Bets">
                     <List
                       dataSource={placedBets.slice(-5).reverse()}
@@ -341,7 +341,7 @@ const Dashboard: React.FC = () => {
                       )}
                     />
                   </Card>
-                )}
+                )} */}
               </Space>
             </Card>
 

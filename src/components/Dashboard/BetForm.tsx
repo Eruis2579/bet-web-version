@@ -11,6 +11,7 @@ interface BetOption {
     sport: string;
     title: string;
     service: string;
+    suffix: string;
 }
 
 interface BetFormProps {
@@ -62,7 +63,7 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
             setBetData(res.data);
             setSearchOptions(res.data.map((bet: BetOption) => ({
                 label: <div className="text-sm text-gray-500 flex flex-col gap-1">
-                    <span className="font-bold">[{bet.service}] {bet.title}</span>
+                    <span className="font-bold">{bet.title} {bet.suffix}</span>
                     <span className="text-gray-500">{bet.desc}</span>
                 </div>,
                 value: bet.title,
