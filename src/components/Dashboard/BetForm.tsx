@@ -66,7 +66,7 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
                     <span className="font-bold">{bet.title} {bet.suffix}</span>
                     <span className="text-gray-500">{bet.desc}</span>
                 </div>,
-                value: bet.title,
+                value: bet.service + "=====" + bet.title,
             })));
         }).catch(() => {
             window.SM.error("Failed to search bets");
@@ -139,7 +139,7 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
             return;
         }
 
-        const betSlips = betData.filter(bet => selectedBets.includes(bet.title));
+        const betSlips = betData.filter(bet => selectedBets.includes(bet.service + "=====" + bet.title));
         if (betSlips.length === 0) {
             message.warning('Please select valid bets');
             return;
@@ -192,6 +192,7 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
                         value={selectedBets}
                         size="large"
                         maxTagCount="responsive"
+                        listHeight={490}
                     />
                 </div>
                 <div className="flex gap-2">
@@ -230,6 +231,7 @@ const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName
                         allowClear
                         value={selectedBets}
                         maxTagCount="responsive"
+                        listHeight={500}
                     />
                 </div>
 
