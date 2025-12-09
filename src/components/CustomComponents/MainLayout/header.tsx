@@ -10,7 +10,7 @@ export default function () {
                 <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center">
-                            <div onClick={() => navigate('/dashboard')} className="cursor-pointer flex items-center space-x-2 text-white">
+                            <div onClick={() => navigate('/landing')} className="cursor-pointer flex items-center space-x-2 text-white">
                                 <Zap className="w-6 h-6 text-green-500" />
                                 <h1 className="hidden md:block text-2xl font-bold text-green-500">Sports Betting - Auto Bet</h1>
                             </div>

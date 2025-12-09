@@ -4,6 +4,7 @@ import { ConfigProvider, Layout, notification, App as AntdApp } from "antd";
 import { AuthProvider } from './contexts/AuthContext';
 import Dashboard from './components/Dashboard';
 import Manage from './components/Manage';
+import Landing from './components/Landing';
 interface Message {
   success: (msg: string) => void,
   error: (msg: string) => void,
@@ -15,8 +16,8 @@ declare global {
   }
 }
 
-// axios.defaults.baseURL = "/api"
-axios.defaults.baseURL = "http://216.126.224.63:8089/api"
+axios.defaults.baseURL = "/api"
+// axios.defaults.baseURL = "http://216.126.224.63:8089/api"
 
 const AppContent = () => {
   const [api, contextHolder] = notification.useNotification();
@@ -51,7 +52,12 @@ const AppContent = () => {
       <AuthProvider>
         <Router basename='/bet'>
           <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/" element={<Navigate to="/landing" replace />} />
+            <Route path="/landing" element={
+              <Layout>
+                <Landing />
+              </Layout>
+            } />
             <Route path="/dashboard" element={
               <Layout>
                 <Dashboard />

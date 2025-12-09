@@ -114,7 +114,7 @@ const BetForm: React.FC<BetFormProps> = ({
                 setConfirmList(response.data || []);
                 setConfirmModalVisible(true);
             } else {
-                window.SM.success('Bet placed successfully Confirm Mode : OFF');
+                window.SM.success('Bet placed successfully.');
             }
         } catch (error: any) {
             window.SM.error(error?.response?.data?.message || "Failed to place bet");
