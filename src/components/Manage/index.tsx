@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Card, Form, Input, InputNumber, Modal, Select, Space, Table, Typography } from 'antd';
+import { Button, Card, Form, Input, Modal, Select, Space, Table, Tooltip, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import MainLayout from '../CustomComponents/MainLayout';
 import { accountService, Account, AccountPayload } from '../../services/accountService';
+import { PlusOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 
@@ -266,9 +267,9 @@ const Manage: React.FC = () => {
           title="Account Management"
           extra={
             <Space>
-              <Button type="primary" onClick={handleAddAccount}>
-                Add Account
-              </Button>
+                <Tooltip title="Add Account">
+                    <Button type="primary" onClick={handleAddAccount} icon={<PlusOutlined />} size='middle' />
+                </Tooltip>
             </Space>
           }
         >

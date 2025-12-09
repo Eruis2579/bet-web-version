@@ -1,16 +1,9 @@
-import { Zap} from 'lucide-react';
+import { Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-
+import { Button, Tooltip } from 'antd';
+import { SettingOutlined } from '@ant-design/icons';
 export default function () {
-    const [time, setTime] = useState(new Date());
     const navigate = useNavigate();
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setTime(new Date());
-        }, 1000);
-        return () => clearInterval(timer);
-    }, []);
     return (
         <>
             <header className="bg-white/10 backdrop-blur-lg border-b border-black/20 sticky top-0 z-50">
@@ -22,16 +15,15 @@ export default function () {
                                 <h1 className="hidden md:block text-2xl font-bold text-green-500">Sports Betting - Auto Bet</h1>
                             </div>
                         </div>
-                        
                         <div className="flex items-center space-x-3">
-                            <button
-                                type="button"
-                                onClick={() => navigate('/manage')}
-                                className="px-3 py-1 text-sm font-medium text-white bg-green-500 rounded-md shadow hover:bg-green-600 transition"
-                            >
-                                Manage
-                            </button>
-                            <span className="text-sm font-medium text-black">{time.toUTCString()}</span>
+                            <Tooltip title="Manage">
+                                <Button
+                                    onClick={() => navigate('/manage')}
+                                    icon={<SettingOutlined />}
+                                    size='large'
+                                    type='primary'
+                                />
+                            </Tooltip>
                         </div>
                     </div>
                 </div>

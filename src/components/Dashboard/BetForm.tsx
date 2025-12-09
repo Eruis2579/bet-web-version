@@ -1,7 +1,18 @@
 import React, { useState, useCallback } from 'react';
-import { Select, Button, message } from 'antd';
+import { Input, message, Card, Typography, Tag, Row, Col, Spin, Modal, Button, List, Space, Divider } from 'antd';
+import { CloseCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
+const { Text, Title } = Typography;
+
+const serviceColors = {
+    "abcwager": "blue",
+    "action": "green",
+    "betwindycity": "red",
+    "fesster": "purple",
+    "godds": "orange",
+    "strikerich": "brown",
+}
 interface BetOption {
     desc: string;
     idgm: number;
@@ -16,238 +27,321 @@ interface BetOption {
 
 interface BetFormProps {
     onBetPlaced: (betData: BetPlacementData) => void;
-    onAddToBetslip: (betData: {
-        betName: string;
-        siteName: string;
-        siteSkin: string;
-        odds?: string;
-        points?: number;
-        betData: any;
-        suffix?: string;
-    }) => void;
-    siteName: string;
-    siteSkin: string;
-    pairIndex?: number;
+    masterBetAmount: number;
+    pointTolerance: number;
+    priceTolerance: number;
+    confirmMode: boolean;
 }
 
 interface BetPlacementData {
     betId: string;
     betName: string;
     amount: number;
-    pairIndex: number;
-    siteName: string;
-    siteSkin: string;
 }
 
-const BetForm: React.FC<BetFormProps> = ({ onBetPlaced, onAddToBetslip, siteName, siteSkin, pairIndex = 0 }) => {
-    const [searchOptions, setSearchOptions] = useState<BetOption[]>([]);
+const BetForm: React.FC<BetFormProps> = ({
+    onBetPlaced,
+    masterBetAmount,
+    pointTolerance,
+    priceTolerance,
+    confirmMode
+}) => {
+    const [searchQuery, setSearchQuery] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [betData, setBetData] = useState<BetOption[]>([]);
-    const [selectedBets, setSelectedBets] = useState<string[]>([]);
-    const [amount, setAmount] = useState<number>(0);
-    const [placing, setPlacing] = useState(false);
+    const [placing, setPlacing] = useState<string | null>(null);
+    const [confirmList, setConfirmList] = useState<any[]>([]);
+    const [confirmModalVisible, setConfirmModalVisible] = useState<boolean>(false);
+    const [selectedBet, setSelectedBet] = useState<BetOption | null>(null);
 
-    const searchBets = useCallback(async (searchQuery: string) => {
-        if (!searchQuery || searchQuery.length === 0) {
-            setSearchOptions([]);
+    const searchBets = useCallback(async (query: string) => {
+        if (!query || query.length === 0) {
+            setBetData([]);
+            return;
+        }
+
+        if (query.length < 2) {
+            setBetData([]);
             return;
         }
 
         setLoading(true);
         axios.get(`/general/teams`, {
             params: {
-                skin: siteSkin,
-                search: searchQuery
+                search: query
             }
         }).then(res => {
-            setBetData(res.data);
-            setSearchOptions(res.data.map((bet: BetOption) => ({
-                label: <div className="text-sm text-gray-500 flex flex-col gap-1">
-                    <span className="font-bold">{bet.title} {bet.suffix}</span>
-                    <span className="text-gray-500">{bet.desc}</span>
-                </div>,
-                value: bet.service + "=====" + bet.title,
-            })));
+            setBetData(res.data || []);
         }).catch(() => {
             window.SM.error("Failed to search bets");
+            setBetData([]);
         }).finally(() => {
             setLoading(false);
         });
-    }, [siteSkin]);
+    }, []);
 
-    const handleSearch = useCallback((value: string) => {
-        if (value && value.length > 1) {
-            searchBets(value);
-        } else {
-            setSearchOptions([]);
-        }
+    const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchQuery(value);
+        searchBets(value);
     }, [searchBets]);
 
-    const handleSelect = useCallback((value: string[]) => {
-        setSelectedBets(value);
-    }, []);
-
     const handleClear = useCallback(() => {
-        setSelectedBets([]);
-        setSearchOptions([]);
+        setSearchQuery('');
+        setBetData([]);
     }, []);
 
-    const handlePlaceBet = useCallback(async () => {
-        if (!selectedBets || selectedBets.length === 0) {
-            message.warning('Please select at least one bet');
+    const handlePlaceBet = useCallback(async (bet: BetOption) => {
+        if (confirmModalVisible) {
+            if (confirmList.length === 0) {
+                message.warning('No bets to confirm');
+                return;
+            }
+        }
+        if (!masterBetAmount || masterBetAmount <= 0) {
+            message.warning('Please set a valid Master Bet Amount');
             return;
         }
 
-        if (!amount || amount <= 0) {
-            message.warning('Please enter a valid amount');
-            return;
-        }
+        const betKey = bet.service + "=====" + bet.title;
+        setPlacing(betKey);
+        setSelectedBet(bet);
 
-        setPlacing(true);
-        const betSlips = betData.filter(bet => selectedBets.includes(bet.title));
-        if (betSlips.length === 0) {
-            message.warning('Please select valid bets');
-            return;
-        }
-        
-        // Place all selected bets
-        const promises = betSlips.map(betSlip => 
-            axios.post(`/general/bet`, {
-                betSlip: betSlip,
-                amount: amount,
-                skin: siteSkin
-            })
-        );
-
-        Promise.all(promises)
-            .then(results => {
-                console.log(results);
-                window.SM.success(`${results.length} bet(s) placed successfully`);
-            })
-            .catch(() => {
-                window.SM.error("Failed to place some bets");
-            })
-            .finally(() => {
-                setPlacing(false);
+        try {
+            const response = await axios.post(`/general/bet`, {
+                betSlip: bet,
+                amount: masterBetAmount,
+                skin: bet.service.toLowerCase(),
+                pointTolerance: pointTolerance,
+                oddsTolerance: priceTolerance,
+                confirmMode: confirmModalVisible ? false : confirmMode,
+                filterEventsList: confirmList || []
             });
 
-    }, [selectedBets, amount, pairIndex, siteName, siteSkin, betData]);
-
-    const handleAddToBetslip = useCallback(() => {
-        if (!selectedBets || selectedBets.length === 0) {
-            message.warning('Please select at least one bet');
-            return;
+            if (confirmMode && !confirmModalVisible) {
+                setConfirmList(response.data || []);
+                setConfirmModalVisible(true);
+            } else {
+                window.SM.success('Bet placed successfully Confirm Mode : OFF');
+                onBetPlaced({
+                    betId: betKey,
+                    betName: bet.title,
+                    amount: masterBetAmount
+                });
+            }
+        } catch (error: any) {
+            window.SM.error(error?.response?.data?.message || "Failed to place bet");
+        } finally {
+            setPlacing(null);
+            if (confirmModalVisible) {
+                setConfirmModalVisible(false);
+                setConfirmList([]);
+                setSelectedBet(null);
+            }
         }
+    }, [masterBetAmount, pointTolerance, priceTolerance, confirmMode, confirmList, onBetPlaced]);
 
-        const betSlips = betData.filter(bet => selectedBets.includes(bet.service + "=====" + bet.title));
-        if (betSlips.length === 0) {
-            message.warning('Please select valid bets');
-            return;
-        }
+    const handleRemoveFromConfirmList = useCallback((index: number) => {
+        setConfirmList(prev => prev.filter((_, i) => i !== index));
+    }, []);
 
-        // Add all selected bets to betslip
-        betSlips.forEach(betSlip => {
-            onAddToBetslip({
-                betName: betSlip.title,
-                siteName: betSlip.service,
-                siteSkin: betSlip.service,
-                odds: betSlip.odds,
-                points: betSlip.points,
-                betData: betSlip,
-                suffix: betSlip.suffix
-            });
-            
-        });
-        // Reset form after adding to betslip
-        setSelectedBets([]);
-        setAmount(0);
-        setSearchOptions([]);
-    }, [selectedBets, betData, siteName, siteSkin, onAddToBetslip]);
+    const handleCancelConfirm = useCallback(() => {
+        setConfirmModalVisible(false);
+        setConfirmList([]);
+        setSelectedBet(null);
+    }, []);
+
+    const getBetKey = (bet: BetOption) => bet.service + "=====" + bet.title;
 
     return (
-        <div className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
-            <div className="block sm:hidden space-y-4">
-                {/* <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-gray-800">{siteName}</h3>
-                </div> */}
+        <div className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
+            <div className="space-y-4">
+                {/* Search Input */}
                 <div className="w-full">
-                    <div className="flex items-center justify-between mb-2">
-                        <label className="block text-sm font-medium text-gray-700">
-                            Bet Selection
-                        </label>
-                    </div>
-                    <Select
-                        mode="multiple"
-                        showSearch
+                    <Input
                         placeholder="Search for bets..."
-                        className="w-full"
-                        options={searchOptions}
-                        onSearch={handleSearch}
-                        onChange={handleSelect}
-                        onClear={handleClear}
-                        loading={loading}
-                        filterOption={false}
-                        notFoundContent={loading ? 'Searching...' : 'Type to search bets'}
-                        allowClear
-                        value={selectedBets}
+                        value={searchQuery}
+                        onChange={handleSearchChange}
                         size="large"
-                        maxTagCount="responsive"
-                        listHeight={490}
-                    />
-                </div>
-                <div className="flex gap-2">
-                    <Button
-                        onClick={handleAddToBetslip}
-                        disabled={!selectedBets || selectedBets.length === 0}
-                        size="large"
-                        className="flex-1"
-                    >
-                        Add to Betslip {selectedBets.length > 0 && `(${selectedBets.length})`}
-                    </Button>
-                </div>
-            </div>
-
-            {/* Desktop Layout (sm and up) */}
-            <div className="hidden sm:flex gap-4 items-center">
-                {/* Bet Selection */}
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-2">
-                        <label className="block text-sm font-medium text-gray-700">
-                            Bet Selection
-                        </label>
-                    </div>
-                    <Select
-                        mode="multiple"
-                        showSearch
-                        placeholder="Search for bets..."
-                        className="w-full"
-                        options={searchOptions}
-                        onSearch={handleSearch}
-                        onChange={handleSelect}
-                        onClear={handleClear}
-                        loading={loading}
-                        filterOption={false}
-                        notFoundContent={loading ? 'Searching...' : 'Type to search bets'}
                         allowClear
-                        value={selectedBets}
-                        maxTagCount="responsive"
-                        listHeight={500}
+                        onClear={handleClear}
                     />
                 </div>
 
-                {/* Amount Input */}
+                {/* Heading */}
+                {betData.length > 0 && (
+                    <Title level={5} className="!mb-4">
+                        Select a bet to Auto-Match:
+                    </Title>
+                )}
 
-                {/* Buttons */}
-                <div className="pt-7 flex-shrink-0 flex gap-2">
-                    <Button
-                        onClick={handleAddToBetslip}
-                        disabled={!selectedBets || selectedBets.length === 0}
-                        className="min-w-[120px]"
-                    >
-                        Add to Betslip {selectedBets.length > 0 && `(${selectedBets.length})`}
-                    </Button>
-                </div>
+                {/* Loading State */}
+                {loading && (
+                    <div className="flex justify-center py-8">
+                        <Spin size="large" />
+                    </div>
+                )}
+
+                {/* Bet Cards Grid */}
+                {!loading && betData.length > 0 && (
+                    <Row gutter={[16, 16]}>
+                        {betData.map((bet, index) => {
+                            const betKey = getBetKey(bet);
+                            const isPlacing = placing === betKey;
+
+                            return (
+                                <Col xs={24} sm={12} md={8} lg={8} key={`${betKey}-${index}`}>
+                                    <Card
+                                        hoverable
+                                        className={`h-full cursor-pointer transition-all ${isPlacing ? 'opacity-50 pointer-events-none' : ''
+                                            }`}
+                                        onClick={() => !placing && !isPlacing && handlePlaceBet(bet)}
+                                        loading={isPlacing}
+                                    >
+                                        <div className="flex flex-col gap-2">
+                                            {/* Bet Title */}
+                                            <div className="flex justify-between items-center">
+                                                <div className='flex flex-col gap-2'>
+                                                    <div className="flex items-start gap-2">
+                                                        <div className="flex-1">
+                                                            <Text strong className="text-sm block mb-1">
+                                                                {bet.title} {bet.suffix}
+                                                            </Text>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Provider/Category */}
+                                                    <Text type="secondary" className="text-xs block">
+                                                        {bet.desc}
+                                                    </Text>
+                                                </div>
+                                                <Tag color={serviceColors[bet.service.toLowerCase() as keyof typeof serviceColors] || 'blue'} className="m-0">
+                                                    {bet.service.charAt(0).toUpperCase() + bet.service.slice(1)}
+                                                </Tag>
+                                            </div>
+
+                                            {/* Provider Label and Odds */}
+                                            <Divider size="small" />
+                                            <div className="flex items-center justify-between mt-2">
+                                                <Text strong className={bet.odds ? (parseFloat(bet.odds) > 0 ? 'text-green-600' : 'text-red-600') : ''}>Line:</Text>
+                                                {bet.odds && (
+                                                    <Text strong className={parseFloat(bet.odds) > 0 ? 'text-green-600' : 'text-red-600'}>
+                                                        {bet.odds}
+                                                    </Text>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </Col>
+                            );
+                        })}
+                    </Row>
+                )}
+
+                {/* Empty State */}
+                {!loading && searchQuery && searchQuery.length >= 2 && betData.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                        <Text type="secondary">No bets found. Try a different search term.</Text>
+                    </div>
+                )}
+
+                {/* Initial State */}
+                {!loading && !searchQuery && betData.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                        <Text type="secondary">Type to search for bets...</Text>
+                    </div>
+                )}
             </div>
+
+            {/* Confirm Master Bet Modal */}
+            <Modal
+                title={<Title level={4} className="!mb-0">Confirm Master Bet</Title>}
+                open={confirmModalVisible}
+                onCancel={handleCancelConfirm}
+                footer={null}
+                width={700}
+                closable={true}
+            >
+                {selectedBet && (
+                    <div className="space-y-1">
+                        {/* Master Bet Details */}
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <Text strong>Master Bet Amount:</Text>
+                                <Text strong className="text-lg">${masterBetAmount}</Text>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <Text strong>Target:</Text>
+                                <Text>{selectedBet.title} {selectedBet.suffix} ({selectedBet.points}/{selectedBet.odds})</Text>
+                            </div>
+                        </div>
+
+                        {/* Execution Plan */}
+                        <div className="mt-4 overflow-y-auto max-h-[400px]">
+                            <Text strong className="text-base block mb-2">Execution Plan (Best Odds First):</Text>
+                            <List
+                                dataSource={confirmList}
+                                renderItem={(item: any, index: number) => (
+                                    <List.Item
+                                        className="border-b border-gray-200 py-3"
+                                        actions={[
+                                            <CloseCircleOutlined
+                                                key="remove"
+                                                className="text-yellow-500 cursor-pointer text-lg"
+                                                onClick={() => handleRemoveFromConfirmList(index)}
+                                            />
+                                        ]}
+                                    >
+                                        <List.Item.Meta
+                                            title={
+                                                <Space>
+                                                    <Text strong>#{index + 1} {item.serviceName ? item.serviceName.charAt(0).toUpperCase() + item.serviceName.slice(1) : 'Unknown'}:</Text>
+                                                </Space>
+                                            }
+                                            description={
+                                                <div className="flex justify-between items-center">
+                                                    <div className="space-y-1">
+                                                        <Text type="secondary" className="block">{item.desc}</Text>
+                                                        <Text className="text-sm">
+                                                            {item.title}
+                                                        </Text>
+                                                    </div>
+                                                    <div>
+                                                        <Text className="text-sm text-green-600">{item.suffix}</Text>
+                                                    </div>
+                                                </div>
+                                            }
+                                        />
+                                    </List.Item>
+                                )}
+                            />
+                        </div>
+
+                        {/* Execution Logic Explanation */}
+                        <div className="mt-3">
+                            <Text type="secondary" className="text-xs">
+                                * System will bet max on site #1, then #2, etc., until ${masterBetAmount} is reached.
+                            </Text>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
+                            <Button onClick={handleCancelConfirm} size="large">
+                                Cancel
+                            </Button>
+                            <Button
+                                type="primary"
+                                onClick={() => handlePlaceBet(selectedBet)}
+                                loading={placing === getBetKey(selectedBet)}
+                                size="large"
+                                className="bg-green-600 hover:bg-green-700"
+                            >
+                                CONFIRM & BET
+                            </Button>
+                        </div>
+                    </div>
+                )}
+            </Modal>
         </div>
     );
 };

@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Card, Space, Typography, List, Tag, Input, Button, Modal, Table, Select, App as AntdApp } from 'antd';
+import { Card, Space, Typography, Button, Modal, Table, App as AntdApp, Tooltip } from 'antd';
 import axios from 'axios';
 import MainLayout from '../CustomComponents/MainLayout';
 import BetForm from './BetForm';
-import Betslip, { BetslipItem } from './Betslip';
+import BetControlPanel from './BetControlPanel';
+import { RedoOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 
@@ -11,8 +12,6 @@ interface BetPlacementData {
   betId: string;
   betName: string;
   amount: number;
-  pairIndex: number;
-  siteName: string;
 }
 
 interface TelegramResponseData {
@@ -36,8 +35,6 @@ const BET_SITES = [
 const Dashboard: React.FC = () => {
   const { message } = AntdApp.useApp();
   const [placedBets, setPlacedBets] = useState<BetPlacementData[]>([]);
-  const [betslipItems, setBetslipItems] = useState<BetslipItem[]>([]);
-  const [placingAllBets, setPlacingAllBets] = useState(false);
   const [selectedSite, setSelectedSite] = useState<typeof BET_SITES[number]>(BET_SITES[0]);
   
 
@@ -50,91 +47,17 @@ const Dashboard: React.FC = () => {
   const [placingTelegramBet, setPlacingTelegramBet] = useState<boolean>(false);
   const [historyData, setHistoryData] = useState<any[]>([]);
   const [historyLoading, setHistoryLoading] = useState<boolean>(false);
+  
+  // Control Panel state
+  const [masterBetAmount, setMasterBetAmount] = useState<number>(100);
+  const [pointTolerance, setPointTolerance] = useState<number>(0.7);
+  const [priceTolerance, setPriceTolerance] = useState<number>(20);
+  const [confirmMode, setConfirmMode] = useState<boolean>(true);
 
   const handleBetPlaced = useCallback((betData: BetPlacementData) => {
     setPlacedBets(prevBets => [...prevBets, betData]);
+    fetchHistory();
   }, []);
-  // Betslip operations
-  const handleAddToBetslip = useCallback((betData: {
-    betName: string;
-    siteName: string;
-    siteSkin: string;
-    odds?: string;
-    points?: number;
-    betData: any;
-    suffix?: string | null;
-  }) => {
-    const id = `${betData.siteName}-${Date.now()}-${Math.random()}`;
-    const newItem: BetslipItem = {
-      id,
-      betName: betData.betName,
-      siteName: betData.siteName,
-      siteSkin: betData.siteSkin,
-      odds: betData.odds,
-      points: betData.points,
-      amount: 0,
-      betData: betData.betData,
-      suffix: betData.suffix
-    };
-
-    setBetslipItems(prev => [...prev, newItem]);
-    message.success(`Added "${betData.betName} ${betData.suffix}" to betslip`);
-  }, []);
-
-  const handleRemoveFromBetslip = useCallback((id: string) => {
-    setBetslipItems(prev => prev.filter(item => item.id !== id));
-  }, []);
-
-  const handleUpdateBetslipAmount = useCallback((id: string, amount: number) => {
-    setBetslipItems(prev => prev.map(item =>
-      item.id === id ? { ...item, amount } : item
-    ));
-  }, []);
-
-  const handleClearBetslip = useCallback(() => {
-    setBetslipItems([]);
-    message.info('Betslip cleared');
-  }, []);
-
-  const handlePlaceAllBets = useCallback(async () => {
-    if (betslipItems.length === 0) {
-      message.warning('No bets in betslip');
-      return;
-    }
-
-    const invalidBets = betslipItems.filter(item => !item.amount || item.amount <= 0);
-    if (invalidBets.length > 0) {
-      message.warning('Please enter valid amounts for all bets');
-      return;
-    }
-
-    setPlacingAllBets(true);
-
-    try {
-      // Place all bets sequentially
-      for (const item of betslipItems) {
-        axios.post('/general/bet', {
-          betSlip: item.betData,
-          amount: item.amount,
-          skin: item.siteSkin
-        }).then(res => {
-          if (res.data[0].stake > 0) {
-            window.SM.success(`👍 ${res.data[0].service} ${res.data[0].account.username} $${res.data[0].stake}`);
-            fetchHistory();
-          } else {
-            window.SM.error(`👎 ${res.data[0].service} ${res.data[0].account.username} ${res.data[0].msg}.`);
-            fetchHistory();
-          }
-        }).catch(() => {
-          window.SM.error(`Failed to place bet`);
-        });
-      }
-      setBetslipItems([]);
-      setPlacingAllBets(false);
-    } catch (error) {
-      message.error('Failed to place some bets');
-    }
-  }, [betslipItems]);
 
   // Telegram version handlers
   const handleTelegramSubmit = useCallback(async () => {
@@ -227,6 +150,10 @@ const Dashboard: React.FC = () => {
     fetchHistory();
   }, [fetchHistory]);
 
+  useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory]);
+
   // Table columns for telegram modal
   const telegramTableColumns = telegramResponseData?.msg && telegramResponseData.msg.length > 0
     ?
@@ -277,93 +204,39 @@ const Dashboard: React.FC = () => {
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="min-h-screen bg-gray-50 py-8">
           <div className="space-y-6">
-            {/* Row 1: Telegram Version */}
-            {/* <Card title="Telegram Version">
-              <Space.Compact className='w-full'>
-                <Input.TextArea
-                  placeholder="Enter input value"
-                  value={telegramInput}
-                  onChange={(e) => setTelegramInput(e.target.value)}
-                  onPressEnter={handleTelegramSubmit}
-                  style={{ flex: 1 }}
-                />
-              </Space.Compact>
-              <Button
-                type="primary"
-                onClick={handleTelegramSubmit}
-                loading={submittingTelegram}
-                className='w-full mt-4'
-              >
-                Submit
-              </Button>
-            </Card> */}
 
             {/* Row 2: Web Version */}
             <Card title="Structured Bet">
               <Space direction="vertical" size="large" className='w-full'>
-                {/* <Select
-                  className='w-full'
-                  value={selectedSite.name}
-                  onChange={(value) => {
-                    const idx = BET_SITES.findIndex(site => site.name === value);
-                    setSelectedSite(BET_SITES[Math.max(idx, 0)]);
-
-                  }}
-                  options={BET_SITES.map(site => ({
-                    label: site.name,
-                    value: site.name,
-                  }))}
-                /> */}
-
-                <BetForm
-                  pairIndex={BET_SITES.findIndex(site => site.name === selectedSite.name) || 0}
-                  onBetPlaced={handleBetPlaced}
-                  onAddToBetslip={handleAddToBetslip}
-                  siteName={selectedSite.name}
-                  siteSkin={selectedSite.skin}
+                {/* Control Panel */}
+                <BetControlPanel
+                  masterBetAmount={masterBetAmount}
+                  pointTolerance={pointTolerance}
+                  priceTolerance={priceTolerance}
+                  confirmMode={confirmMode}
+                  onMasterBetAmountChange={(value) => setMasterBetAmount(value || 0)}
+                  onPointToleranceChange={(value) => setPointTolerance(value || 0)}
+                  onPriceToleranceChange={(value) => setPriceTolerance(value || 0)}
+                  onConfirmModeChange={setConfirmMode}
                 />
-
-                {/* {placedBets.length > 0 && (
-                  <Card type="inner" title="Recent Bets">
-                    <List
-                      dataSource={placedBets.slice(-5).reverse()}
-                      renderItem={(bet) => (
-                        <List.Item>
-                          <div className="flex justify-between items-center w-full">
-                            <div>
-                              <Text strong>{bet.betName}</Text>
-                              <br />
-                              <Text type="secondary">Site: {bet.siteName}</Text>
-                            </div>
-                            <div className="text-right">
-                              <Tag color="green">${bet.amount.toFixed(2)}</Tag>
-                            </div>
-                          </div>
-                        </List.Item>
-                      )}
-                    />
-                  </Card>
-                )} */}
+                <BetForm
+                  onBetPlaced={handleBetPlaced}
+                  masterBetAmount={masterBetAmount}
+                  pointTolerance={pointTolerance}
+                  priceTolerance={priceTolerance}
+                  confirmMode={confirmMode}
+                />
               </Space>
             </Card>
 
-            {/* Row 3: Web Betslips */}
+            {/* Row 3: History */}
             <Space direction="vertical" size="large" className='w-full'>
-              <Betslip
-                items={betslipItems}
-                onRemoveItem={handleRemoveFromBetslip}
-                onUpdateAmount={handleUpdateBetslipAmount}
-                onClearAll={handleClearBetslip}
-                onPlaceAllBets={handlePlaceAllBets}
-                placing={placingAllBets}
-              />
-
               <Card
                 title="History"
                 extra={
-                  <Button size="small" onClick={fetchHistory} loading={historyLoading}>
-                    Refresh
-                  </Button>
+                    <Tooltip title="Refresh">
+                        <Button type="primary" onClick={fetchHistory} loading={historyLoading} icon={<RedoOutlined />} size='middle' />
+                    </Tooltip>
                 }
               >
                 <Table
