@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card, List, Button, InputNumber, Space, Typography, Tag, Divider } from 'antd';
+import { Card, List, Button, InputNumber, Typography, Tag, Divider } from 'antd';
 import { DeleteOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 export interface BetslipItem {
   id: string;

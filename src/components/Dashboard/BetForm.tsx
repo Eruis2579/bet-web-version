@@ -26,21 +26,13 @@ interface BetOption {
 }
 
 interface BetFormProps {
-    onBetPlaced: (betData: BetPlacementData) => void;
     masterBetAmount: number;
     pointTolerance: number;
     priceTolerance: number;
     confirmMode: boolean;
 }
 
-interface BetPlacementData {
-    betId: string;
-    betName: string;
-    amount: number;
-}
-
 const BetForm: React.FC<BetFormProps> = ({
-    onBetPlaced,
     masterBetAmount,
     pointTolerance,
     priceTolerance,
@@ -123,11 +115,6 @@ const BetForm: React.FC<BetFormProps> = ({
                 setConfirmModalVisible(true);
             } else {
                 window.SM.success('Bet placed successfully Confirm Mode : OFF');
-                onBetPlaced({
-                    betId: betKey,
-                    betName: bet.title,
-                    amount: masterBetAmount
-                });
             }
         } catch (error: any) {
             window.SM.error(error?.response?.data?.message || "Failed to place bet");
@@ -139,7 +126,7 @@ const BetForm: React.FC<BetFormProps> = ({
                 setSelectedBet(null);
             }
         }
-    }, [masterBetAmount, pointTolerance, priceTolerance, confirmMode, confirmList, onBetPlaced]);
+    }, [masterBetAmount, pointTolerance, priceTolerance, confirmMode, confirmList]);
 
     const handleRemoveFromConfirmList = useCallback((index: number) => {
         setConfirmList(prev => prev.filter((_, i) => i !== index));

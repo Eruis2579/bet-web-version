@@ -8,11 +8,6 @@ import { RedoOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 
-interface BetPlacementData {
-  betId: string;
-  betName: string;
-  amount: number;
-}
 
 interface TelegramResponseData {
   input: string;
@@ -22,28 +17,14 @@ interface TelegramResponseData {
   }>;
 }
 
-const BET_SITES = [
-  { name: "Action", skin: "Action" },
-  { name: "Godds", skin: "Godds" },
-  { name: "Highroller", skin: "Highroller" },
-  { name: "Fesster", skin: "Fesster" },
-  { name: "Betwindycity", skin: "Betwindycity" },
-  { name: "Abcwager", skin: "Abcwager" },
-  { name: "Strikerich", skin: "Strikerich" },
-] as const;
-
 const Dashboard: React.FC = () => {
   const { message } = AntdApp.useApp();
-  const [placedBets, setPlacedBets] = useState<BetPlacementData[]>([]);
-  const [selectedSite, setSelectedSite] = useState<typeof BET_SITES[number]>(BET_SITES[0]);
   
 
   // Telegram version state
-  const [telegramInput, setTelegramInput] = useState<string>('');
   const [telegramModalVisible, setTelegramModalVisible] = useState<boolean>(false);
   const [telegramResponseData, setTelegramResponseData] = useState<TelegramResponseData | null>(null);
   const [selectedMsgRows, setSelectedMsgRows] = useState<React.Key[]>([]);
-  const [submittingTelegram, setSubmittingTelegram] = useState<boolean>(false);
   const [placingTelegramBet, setPlacingTelegramBet] = useState<boolean>(false);
   const [historyData, setHistoryData] = useState<any[]>([]);
   const [historyLoading, setHistoryLoading] = useState<boolean>(false);
@@ -54,40 +35,7 @@ const Dashboard: React.FC = () => {
   const [priceTolerance, setPriceTolerance] = useState<number>(20);
   const [confirmMode, setConfirmMode] = useState<boolean>(true);
 
-  const handleBetPlaced = useCallback((betData: BetPlacementData) => {
-    setPlacedBets(prevBets => [...prevBets, betData]);
-    fetchHistory();
-  }, []);
-
   // Telegram version handlers
-  const handleTelegramSubmit = useCallback(async () => {
-    if (!telegramInput.trim()) {
-      message.warning('Please enter input value');
-      return;
-    }
-
-    setSubmittingTelegram(true);
-    try {
-      const response = await axios.post('/general/prebet', {
-        input: telegramInput
-      });
-
-      if (response.data && response.data.input && response.data.betslips && response.data.betslips.length > 0) {
-        setTelegramResponseData({
-          input: response.data.input,
-          msg: response.data.betslips
-        });
-        setSelectedMsgRows(response.data.betslips.map((_: any, index: number) => index));
-        setTelegramModalVisible(true);
-      } else {
-        window.SM.error('Invalid response format from server');
-      }
-    } catch (error: any) {
-      window.SM.error(error?.response?.data || 'Failed to submit');
-    } finally {
-      setSubmittingTelegram(false);
-    }
-  }, [telegramInput]);
 
   const handleTelegramBet = useCallback(async () => {
     if (!telegramResponseData) {
@@ -113,7 +61,6 @@ const Dashboard: React.FC = () => {
       window.SM.success('Bet placed successfully');
       fetchHistory();
       setTelegramModalVisible(false);
-      setTelegramInput('');
       setTelegramResponseData(null);
       setSelectedMsgRows([]);
     } catch (error: any) {
@@ -220,7 +167,6 @@ const Dashboard: React.FC = () => {
                   onConfirmModeChange={setConfirmMode}
                 />
                 <BetForm
-                  onBetPlaced={handleBetPlaced}
                   masterBetAmount={masterBetAmount}
                   pointTolerance={pointTolerance}
                   priceTolerance={priceTolerance}
