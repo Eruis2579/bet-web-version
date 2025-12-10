@@ -12,3 +12,357 @@
     font-size: 14px;
     height: 56px;
 }
+
+/* Dark Mode Styles for Ant Design Components */
+.dark-input .ant-input,
+.dark-input input {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+    color: #e2e8f0 !important;
+}
+
+.dark-input .ant-input::placeholder {
+    color: #94a3b8 !important;
+}
+
+.dark-input .ant-input:hover,
+.dark-input input:hover {
+    border-color: #64748b !important;
+}
+
+.dark-input .ant-input:focus,
+.dark-input input:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2) !important;
+}
+
+.dark-input .ant-input-number,
+.dark-input .ant-input-number-input {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+    color: #e2e8f0 !important;
+}
+
+.dark-input .ant-input-number:hover {
+    border-color: #64748b !important;
+}
+
+.dark-input .ant-input-number-focused,
+.dark-input .ant-input-number:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2) !important;
+}
+
+.dark-input .ant-input-number-handler-wrap {
+    background-color: #475569 !important;
+}
+
+.dark-input .ant-input-number-handler {
+    background-color: #475569 !important;
+    border-color: #64748b !important;
+}
+
+.dark-input .ant-input-number-handler:hover {
+    background-color: #64748b !important;
+}
+
+.dark-input .ant-input-number-handler-up-inner,
+.dark-input .ant-input-number-handler-down-inner {
+    color: #e2e8f0 !important;
+}
+
+.dark-switch .ant-switch {
+    background-color: #475569 !important;
+}
+
+.dark-switch .ant-switch-checked {
+    background-color: #10b981 !important;
+}
+
+/* Dark Table Styles */
+.dark-table .ant-table {
+    background-color: transparent !important;
+    color: #e2e8f0 !important;
+}
+
+.dark-table .ant-table-thead > tr > th {
+    background-color: #1e293b !important;
+    border-bottom: 1px solid #475569 !important;
+    color: #e2e8f0 !important;
+}
+
+.dark-table .ant-table-tbody > tr > td {
+    border-bottom: 1px solid #334155 !important;
+    background-color: transparent !important;
+    color: #cbd5e1 !important;
+}
+
+.dark-table .ant-table-tbody > tr:hover > td {
+    background-color: #334155 !important;
+}
+
+.dark-table .ant-table-tbody > tr.ant-table-row-selected > td {
+    background-color: #334155 !important;
+}
+
+.dark-table .ant-table-pagination {
+    color: #e2e8f0 !important;
+}
+
+.dark-table .ant-pagination-item {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+}
+
+.dark-table .ant-pagination-item a {
+    color: #e2e8f0 !important;
+}
+
+.dark-table .ant-pagination-item-active {
+    background-color: #10b981 !important;
+    border-color: #10b981 !important;
+}
+
+.dark-table .ant-pagination-item-active a {
+    color: #fff !important;
+}
+
+.dark-table .ant-pagination-prev,
+.dark-table .ant-pagination-next {
+    color: #e2e8f0 !important;
+}
+
+.dark-table .ant-pagination-prev:hover,
+.dark-table .ant-pagination-next:hover {
+    color: #10b981 !important;
+}
+
+.dark-table .ant-checkbox-inner {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+}
+
+.dark-table .ant-checkbox-checked .ant-checkbox-inner {
+    background-color: #10b981 !important;
+    border-color: #10b981 !important;
+}
+
+/* Dark Modal Styles */
+.dark-modal .ant-modal-content {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+.dark-modal .ant-modal-close {
+    color: #94a3b8 !important;
+}
+
+.dark-modal .ant-modal-close:hover {
+    color: #e2e8f0 !important;
+}
+
+/* Dark Card Styles */
+.dark-bet-card .ant-card {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+}
+
+.dark-bet-card .ant-card:hover {
+    border-color: #10b981 !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15) !important;
+}
+
+.dark-bet-card .ant-card-body {
+    color: #e2e8f0 !important;
+}
+
+/* Dark List Styles */
+.dark-modal .ant-list-item {
+    border-bottom-color: #475569 !important;
+}
+
+.dark-modal .ant-list-item-meta-title {
+    color: #e2e8f0 !important;
+}
+
+.dark-modal .ant-list-item-meta-description {
+    color: #cbd5e1 !important;
+}
+
+/* Dark Pagination Styles */
+.dark-pagination .ant-pagination-item {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+}
+
+.dark-pagination .ant-pagination-item a {
+    color: #e2e8f0 !important;
+}
+
+.dark-pagination .ant-pagination-item-active {
+    background-color: #10b981 !important;
+    border-color: #10b981 !important;
+}
+
+.dark-pagination .ant-pagination-item-active a {
+    color: #fff !important;
+}
+
+/* Dark Select Styles */
+.dark-select .ant-select-selector {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+    color: #e2e8f0 !important;
+}
+
+.dark-select .ant-select-selection-item {
+    color: #e2e8f0 !important;
+}
+
+.dark-select .ant-select-selection-placeholder {
+    color: #94a3b8 !important;
+}
+
+.dark-select:hover .ant-select-selector {
+    border-color: #64748b !important;
+}
+
+.dark-select.ant-select-focused .ant-select-selector {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2) !important;
+}
+
+.dark-select .ant-select-arrow {
+    color: #e2e8f0 !important;
+}
+
+/* Dark Select Dropdown */
+.ant-select-dropdown {
+    background-color: #1e293b !important;
+    border: 1px solid #475569 !important;
+}
+
+.ant-select-dropdown .ant-select-item {
+    color: #e2e8f0 !important;
+}
+
+.ant-select-dropdown .ant-select-item:hover {
+    background-color: #334155 !important;
+}
+
+.ant-select-dropdown .ant-select-item-option-selected {
+    background-color: #334155 !important;
+    color: #10b981 !important;
+}
+
+.ant-select-dropdown .ant-select-item-option-active {
+    background-color: #334155 !important;
+}
+
+/* Dark Form Label Styles */
+.dark-modal .ant-form-item-label > label {
+    color: #e2e8f0 !important;
+}
+
+/* Dark Link Button Styles */
+.ant-btn-link {
+    color: inherit !important;
+}
+
+/* Responsive Table Styles */
+@media (max-width: 640px) {
+    .dark-table .ant-table {
+        font-size: 12px;
+    }
+    
+    .dark-table .ant-table-thead > tr > th {
+        padding: 8px 4px !important;
+        font-size: 11px;
+    }
+    
+    .dark-table .ant-table-tbody > tr > td {
+        padding: 8px 4px !important;
+        font-size: 11px;
+    }
+    
+    .dark-table .ant-pagination {
+        margin: 8px 0 !important;
+    }
+    
+    .dark-table .ant-pagination-item,
+    .dark-table .ant-pagination-prev,
+    .dark-table .ant-pagination-next {
+        min-width: 24px !important;
+        height: 24px !important;
+        line-height: 22px !important;
+        margin: 0 2px !important;
+    }
+    
+    .dark-table .ant-pagination-item a {
+        font-size: 11px !important;
+    }
+}
+
+/* Responsive Modal Styles */
+@media (max-width: 640px) {
+    .dark-modal .ant-modal {
+        margin: 8px !important;
+        max-width: calc(100vw - 16px) !important;
+    }
+    
+    .dark-modal .ant-modal-content {
+        padding: 0 !important;
+    }
+    
+    .dark-modal .ant-modal-header {
+        padding: 12px 16px !important;
+    }
+    
+    .dark-modal .ant-modal-body {
+        padding: 16px !important;
+    }
+    
+    .dark-modal .ant-modal-footer {
+        padding: 8px 16px !important;
+    }
+    
+    .dark-modal .ant-modal-footer .ant-btn {
+        margin: 0 4px !important;
+    }
+}
+
+/* Responsive Form Styles */
+.responsive-form .ant-form-item {
+    margin-bottom: 12px;
+}
+
+@media (max-width: 640px) {
+    .responsive-form .ant-form-item-label {
+        padding-bottom: 4px !important;
+    }
+    
+    .responsive-form .ant-form-item-label > label {
+        font-size: 13px !important;
+    }
+}
+
+/* Responsive Card Styles */
+@media (max-width: 640px) {
+    .ant-card-head {
+        padding: 12px 8px !important;
+        min-height: 48px !important;
+    }
+    
+    .ant-card-head-title {
+        font-size: 14px !important;
+        padding: 0 !important;
+    }
+    
+    .ant-card-extra {
+        padding: 0 !important;
+    }
+    
+    .ant-card-body {
+        padding: 12px 8px !important;
+    }
+}

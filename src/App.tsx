@@ -16,8 +16,8 @@ declare global {
   }
 }
 
-axios.defaults.baseURL = "/api"
-// axios.defaults.baseURL = "http://216.126.224.63:8089/api"
+// axios.defaults.baseURL = "/api"
+axios.defaults.baseURL = "http://216.126.224.63:8089/api"
 
 const AppContent = () => {
   const [api, contextHolder] = notification.useNotification();
@@ -80,7 +80,7 @@ function App() {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#1890ff',
+          colorPrimary: '#10b981', // emerald-500 to match header
         },
       }}
     >

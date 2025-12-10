@@ -141,7 +141,7 @@ const BetForm: React.FC<BetFormProps> = ({
     const getBetKey = (bet: BetOption) => bet.service + "=====" + bet.title;
 
     return (
-        <div className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
+        <div className="w-full p-3 sm:p-4 border border-slate-700/50 rounded-xl bg-slate-700/30 backdrop-blur-sm shadow-lg">
             <div className="space-y-4">
                 {/* Search Input */}
                 <div className="w-full">
@@ -152,12 +152,18 @@ const BetForm: React.FC<BetFormProps> = ({
                         size="large"
                         allowClear
                         onClear={handleClear}
+                        className="dark-input"
+                        style={{ 
+                            backgroundColor: '#334155',
+                            borderColor: '#475569',
+                            color: '#e2e8f0'
+                        }}
                     />
                 </div>
 
                 {/* Heading */}
                 {betData.length > 0 && (
-                    <Title level={5} className="!mb-4">
+                    <Title level={5} className="!mb-4 !text-slate-200">
                         Select a bet to Auto-Match:
                     </Title>
                 )}
@@ -180,10 +186,17 @@ const BetForm: React.FC<BetFormProps> = ({
                                 <Col xs={24} sm={12} md={8} lg={8} key={`${betKey}-${index}`}>
                                     <Card
                                         hoverable
-                                        className={`h-full cursor-pointer transition-all ${isPlacing ? 'opacity-50 pointer-events-none' : ''
+                                        className={`h-full cursor-pointer transition-all dark-bet-card ${isPlacing ? 'opacity-50 pointer-events-none' : ''
                                             }`}
                                         onClick={() => !placing && !isPlacing && handlePlaceBet(bet)}
                                         loading={isPlacing}
+                                        style={{
+                                            backgroundColor: '#1e293b',
+                                            borderColor: '#475569',
+                                        }}
+                                        styles={{
+                                            body: { color: '#e2e8f0' }
+                                        }}
                                     >
                                         <div className="flex flex-col gap-2">
                                             {/* Bet Title */}
@@ -191,14 +204,14 @@ const BetForm: React.FC<BetFormProps> = ({
                                                 <div className='flex flex-col gap-2'>
                                                     <div className="flex items-start gap-2">
                                                         <div className="flex-1">
-                                                            <Text strong className="text-sm block mb-1">
+                                                            <Text strong className="text-sm block mb-1 text-slate-200">
                                                                 {bet.title} {bet.suffix}
                                                             </Text>
                                                         </div>
                                                     </div>
 
                                                     {/* Provider/Category */}
-                                                    <Text type="secondary" className="text-xs block">
+                                                    <Text className="text-xs block text-slate-400">
                                                         {bet.desc}
                                                     </Text>
                                                 </div>
@@ -208,11 +221,11 @@ const BetForm: React.FC<BetFormProps> = ({
                                             </div>
 
                                             {/* Provider Label and Odds */}
-                                            <Divider size="small" />
+                                            <Divider size="small" style={{ borderColor: '#475569' }} />
                                             <div className="flex items-center justify-between mt-2">
-                                                <Text strong className={bet.odds ? (parseFloat(bet.odds) > 0 ? 'text-green-600' : 'text-red-600') : ''}>Line:</Text>
+                                                <Text strong className={bet.odds ? (parseFloat(bet.odds) > 0 ? 'text-emerald-400' : 'text-red-400') : 'text-slate-300'}>Line:</Text>
                                                 {bet.odds && (
-                                                    <Text strong className={parseFloat(bet.odds) > 0 ? 'text-green-600' : 'text-red-600'}>
+                                                    <Text strong className={parseFloat(bet.odds) > 0 ? 'text-emerald-400' : 'text-red-400'}>
                                                         {bet.odds}
                                                     </Text>
                                                 )}
@@ -227,54 +240,61 @@ const BetForm: React.FC<BetFormProps> = ({
 
                 {/* Empty State */}
                 {!loading && searchQuery && searchQuery.length >= 2 && betData.length === 0 && (
-                    <div className="text-center py-8 text-gray-500">
-                        <Text type="secondary">No bets found. Try a different search term.</Text>
+                    <div className="text-center py-8 text-slate-400">
+                        <Text className="text-slate-400">No bets found. Try a different search term.</Text>
                     </div>
                 )}
 
                 {/* Initial State */}
                 {!loading && !searchQuery && betData.length === 0 && (
-                    <div className="text-center py-8 text-gray-500">
-                        <Text type="secondary">Type to search for bets...</Text>
+                    <div className="text-center py-8 text-slate-400">
+                        <Text className="text-slate-400">Type to search for bets...</Text>
                     </div>
                 )}
             </div>
 
             {/* Confirm Master Bet Modal */}
             <Modal
-                title={<Title level={4} className="!mb-0">Confirm Master Bet</Title>}
+                title={<Title level={4} className="!mb-0 !text-slate-100">Confirm Master Bet</Title>}
                 open={confirmModalVisible}
                 onCancel={handleCancelConfirm}
                 footer={null}
                 width={700}
                 closable={true}
+                className="dark-modal"
+                styles={{
+                    content: { backgroundColor: '#1e293b', border: '1px solid rgba(148, 163, 184, 0.2)' },
+                    header: { backgroundColor: '#1e293b', borderBottom: '1px solid rgba(148, 163, 184, 0.2)' },
+                    footer: { backgroundColor: '#1e293b', borderTop: '1px solid rgba(148, 163, 184, 0.2)' }
+                }}
             >
                 {selectedBet && (
                     <div className="space-y-1">
                         {/* Master Bet Details */}
                         <div className="space-y-2">
                             <div className="flex justify-between items-center">
-                                <Text strong>Master Bet Amount:</Text>
-                                <Text strong className="text-lg">${masterBetAmount}</Text>
+                                <Text strong className="text-slate-200">Master Bet Amount:</Text>
+                                <Text strong className="text-lg text-emerald-400">${masterBetAmount}</Text>
                             </div>
                             <div className="flex justify-between items-center">
-                                <Text strong>Target:</Text>
-                                <Text>{selectedBet.title} {selectedBet.suffix} ({selectedBet.points}/{selectedBet.odds})</Text>
+                                <Text strong className="text-slate-200">Target:</Text>
+                                <Text className="text-slate-300">{selectedBet.title} {selectedBet.suffix} ({selectedBet.points}/{selectedBet.odds})</Text>
                             </div>
                         </div>
 
                         {/* Execution Plan */}
                         <div className="mt-4 overflow-y-auto max-h-[400px]">
-                            <Text strong className="text-base block mb-2">Execution Plan (Best Odds First):</Text>
+                            <Text strong className="text-base block mb-2 text-slate-200">Execution Plan (Best Odds First):</Text>
                             <List
                                 dataSource={confirmList}
                                 renderItem={(item: any, index: number) => (
                                     <List.Item
-                                        className="border-b border-gray-200 py-3"
+                                        className="border-b border-slate-700 py-3"
+                                        style={{ borderColor: '#475569' }}
                                         actions={[
                                             <CloseCircleOutlined
                                                 key="remove"
-                                                className="text-yellow-500 cursor-pointer text-lg"
+                                                className="text-yellow-400 cursor-pointer text-lg hover:text-yellow-300 transition-colors"
                                                 onClick={() => handleRemoveFromConfirmList(index)}
                                             />
                                         ]}
@@ -282,19 +302,19 @@ const BetForm: React.FC<BetFormProps> = ({
                                         <List.Item.Meta
                                             title={
                                                 <Space>
-                                                    <Text strong>#{index + 1} {item.serviceName ? item.serviceName.charAt(0).toUpperCase() + item.serviceName.slice(1) : 'Unknown'}:</Text>
+                                                    <Text strong className="text-slate-200">#{index + 1} {item.serviceName ? item.serviceName.charAt(0).toUpperCase() + item.serviceName.slice(1) : 'Unknown'}:</Text>
                                                 </Space>
                                             }
                                             description={
                                                 <div className="flex justify-between items-center">
                                                     <div className="space-y-1">
-                                                        <Text type="secondary" className="block">{item.desc}</Text>
-                                                        <Text className="text-sm">
+                                                        <Text className="block text-slate-400">{item.desc}</Text>
+                                                        <Text className="text-sm text-slate-300">
                                                             {item.title}
                                                         </Text>
                                                     </div>
                                                     <div>
-                                                        <Text className="text-sm text-green-600">{item.suffix}</Text>
+                                                        <Text className="text-sm text-emerald-400">{item.suffix}</Text>
                                                     </div>
                                                 </div>
                                             }
@@ -306,14 +326,18 @@ const BetForm: React.FC<BetFormProps> = ({
 
                         {/* Execution Logic Explanation */}
                         <div className="mt-3">
-                            <Text type="secondary" className="text-xs">
+                            <Text className="text-xs text-slate-400">
                                 * System will bet max on site #1, then #2, etc., until ${masterBetAmount} is reached.
                             </Text>
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
-                            <Button onClick={handleCancelConfirm} size="large">
+                        <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-700">
+                            <Button 
+                                onClick={handleCancelConfirm} 
+                                size="large"
+                                className="!border-slate-600 !text-slate-300 hover:!border-slate-400 hover:!text-slate-100 !bg-slate-700/50"
+                            >
                                 Cancel
                             </Button>
                             <Button
@@ -321,7 +345,7 @@ const BetForm: React.FC<BetFormProps> = ({
                                 onClick={() => handlePlaceBet(selectedBet)}
                                 loading={placing === getBetKey(selectedBet)}
                                 size="large"
-                                className="bg-green-600 hover:bg-green-700"
+                                className="!bg-emerald-500 hover:!bg-emerald-600 !border-emerald-500"
                             >
                                 CONFIRM & BET
                             </Button>

@@ -42,7 +42,7 @@ export default function Landing() {
             <Carousel
                 ref={setCarouselRef}
                 autoplay
-                autoplaySpeed={2000}
+                autoplaySpeed={3000}
                 effect="fade"
                 dots={true}
                 dotPosition="bottom"

@@ -106,10 +106,10 @@ const Dashboard: React.FC = () => {
     ?
     [
       {
-        title: "Msg",
+        title: <span className="text-slate-200">Msg</span>,
         dataIndex: "msg",
         key: "msg",
-        render: (text: string) => <Text>{text}</Text>,
+        render: (text: string) => <Text className="text-slate-300">{text}</Text>,
       }
     ]
     : [];
@@ -117,27 +117,27 @@ const Dashboard: React.FC = () => {
   const historyColumns = historyData.length > 0
     ?[
       {
-        title: "No",
+        title: <span className="text-slate-200">No</span>,
         key: "no",
-        render: (_: string, __: any, index: number) => <Text>{index + 1}</Text>,
+        render: (_: string, __: any, index: number) => <Text className="text-slate-300">{index + 1}</Text>,
       },
       {
-        title: "Kind",
+        title: <span className="text-slate-200">Kind</span>,
         dataIndex: "kind",
         key: "kind",
-        render: (text: string) => <Text>{text}</Text>,
+        render: (text: string) => <Text className="text-slate-300">{text}</Text>,
       },
       {
-        title: "Service",
+        title: <span className="text-slate-200">Service</span>,
         dataIndex: "service",
         key: "service",
-        render: (text: string) => <Text>{text}</Text>,
+        render: (text: string) => <Text className="text-slate-300">{text}</Text>,
       },
       {
-        title: "Outputs",
+        title: <span className="text-slate-200">Outputs</span>,
         dataIndex: "outputs",
         key: "outputs",
-        render: (outputs: any[]) => <Text>{outputs?.map((output: any) =>output.stake > 0 ? 
+        render: (outputs: any[]) => <Text className="text-slate-300">{outputs?.map((output: any) =>output.stake > 0 ? 
           `👍 ${output.service} ${output.account.username} $${output.stake}` 
           : 
           `👎 ${output.service} ${output.account.username} ${output.msg}.`)
@@ -148,12 +148,17 @@ const Dashboard: React.FC = () => {
 
   return (
     <MainLayout>
-      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="space-y-6">
 
             {/* Row 2: Web Version */}
-            <Card title="Structured Bet">
+            <Card 
+              title={<span className="text-slate-100 font-semibold">Structured Bet</span>}
+              className="!bg-slate-800/50 !border-slate-700/50 backdrop-blur-sm shadow-xl"
+              headStyle={{ borderBottom: '1px solid rgba(148, 163, 184, 0.2)', background: 'transparent' }}
+              bodyStyle={{ background: 'transparent' }}
+            >
               <Space direction="vertical" size="large" className='w-full'>
                 {/* Control Panel */}
                 <BetControlPanel
@@ -178,12 +183,22 @@ const Dashboard: React.FC = () => {
             {/* Row 3: History */}
             <Space direction="vertical" size="large" className='w-full'>
               <Card
-                title="History"
+                title={<span className="text-slate-100 font-semibold">History</span>}
                 extra={
                     <Tooltip title="Refresh">
-                        <Button type="primary" onClick={fetchHistory} loading={historyLoading} icon={<RedoOutlined />} size='middle' />
+                        <Button 
+                          type="primary" 
+                          onClick={fetchHistory} 
+                          loading={historyLoading} 
+                          icon={<RedoOutlined />} 
+                          size='middle'
+                          className="!bg-emerald-500 hover:!bg-emerald-600 !border-emerald-500"
+                        />
                     </Tooltip>
                 }
+                className="!bg-slate-800/50 !border-slate-700/50 backdrop-blur-sm shadow-xl"
+                headStyle={{ borderBottom: '1px solid rgba(148, 163, 184, 0.2)', background: 'transparent' }}
+                bodyStyle={{ background: 'transparent' }}
               >
                 <Table
                   columns={historyColumns}
@@ -192,12 +207,16 @@ const Dashboard: React.FC = () => {
                     key: item.id ?? index,
                   }))}
                   loading={historyLoading}
-                  pagination={{ pageSize: 10 }}
+                  pagination={{ 
+                    pageSize: 10,
+                    className: 'dark-pagination'
+                  }}
                   scroll={{ x: true }}
                   locale={{
-                    emptyText: 'No history data',
+                    emptyText: <span className="text-slate-400">No history data</span>,
                   }}
                   size="small"
+                  className="dark-table"
                 />
               </Card>
             </Space>
@@ -207,11 +226,15 @@ const Dashboard: React.FC = () => {
 
       {/* Telegram Modal */}
       <Modal
-        title="Telegram Bet Selection"
+        title={<span className="text-slate-100 font-semibold">Telegram Bet Selection</span>}
         open={telegramModalVisible}
         onCancel={handleTelegramModalClose}
         footer={[
-          <Button key="cancel" onClick={handleTelegramModalClose}>
+          <Button 
+            key="cancel" 
+            onClick={handleTelegramModalClose}
+            className="!border-slate-600 !text-slate-300 hover:!border-slate-400 hover:!text-slate-100 !bg-slate-700/50"
+          >
             Cancel
           </Button>,
           <Button
@@ -219,18 +242,25 @@ const Dashboard: React.FC = () => {
             type="primary"
             onClick={handleTelegramBet}
             loading={placingTelegramBet}
+            className="!bg-emerald-500 hover:!bg-emerald-600 !border-emerald-500"
           >
             Bet
           </Button>,
         ]}
         width={800}
+        className="dark-modal"
+        styles={{
+          content: { backgroundColor: '#1e293b', border: '1px solid rgba(148, 163, 184, 0.2)' },
+          header: { backgroundColor: '#1e293b', borderBottom: '1px solid rgba(148, 163, 184, 0.2)' },
+          footer: { backgroundColor: '#1e293b', borderTop: '1px solid rgba(148, 163, 184, 0.2)' }
+        }}
       >
         {telegramResponseData && (
           <div>
             {/* Input field displayed as string on top */}
-            <div style={{ marginBottom: 16, padding: 12, backgroundColor: '#f5f5f5', borderRadius: 4 }}>
-              <Text strong>Input: </Text>
-              <Text>{telegramResponseData.input}</Text>
+            <div className="mb-4 p-3 bg-slate-700/50 rounded-lg border border-slate-600/50">
+              <Text strong className="text-slate-200">Input: </Text>
+              <Text className="text-slate-300">{telegramResponseData.input}</Text>
             </div>
 
             {/* Table with checkboxes for msg arrays */}
@@ -249,6 +279,7 @@ const Dashboard: React.FC = () => {
               }))}
               pagination={false}
               scroll={{ y: 400 }}
+              className="dark-table"
             />
           </div>
         )}
