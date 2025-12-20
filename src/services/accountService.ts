@@ -6,9 +6,7 @@ export interface Account {
   service: string;
   username: string;
   password: string;
-  playerId: string;
-  profileId: string;
-  profileLimitId: string;
+  user_max: number;
   balance: number;
   available: number;
   atrisk: number;
@@ -25,9 +23,7 @@ const normalizeAccount = (raw: any, fallbackSite?: string, index?: number): Acco
   const balance = Number(raw?.balance ?? 0);
   const available = Number(raw?.available ?? 0);
   const atrisk = Number(raw?.atrisk ?? 0);
-  const playerId = raw?.playerId?.toString?.().trim?.() ?? raw?.playerId ?? '';
-  const profileId = raw?.profileId?.toString?.().trim?.() ?? raw?.profileId ?? '';
-  const profileLimitId = raw?.profileLimitId?.toString?.().trim?.() ?? raw?.profileLimitId ?? '';
+  const user_max = Number(raw?.user_max ?? 0);
   const sessionId =
     raw?.sessionId ??
     raw?.sessionID ??
@@ -45,9 +41,7 @@ const normalizeAccount = (raw: any, fallbackSite?: string, index?: number): Acco
     service,
     username,
     password,
-    playerId,
-    profileId,
-    profileLimitId,
+    user_max,
     balance: Number.isFinite(balance) ? balance : 0,
     available: Number.isFinite(available) ? available : 0,
     atrisk: Number.isFinite(atrisk) ? atrisk : 0,

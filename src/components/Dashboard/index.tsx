@@ -34,6 +34,8 @@ const Dashboard: React.FC = () => {
   const [pointTolerance, setPointTolerance] = useState<number>(0.7);
   const [priceTolerance, setPriceTolerance] = useState<number>(20);
   const [confirmMode, setConfirmMode] = useState<boolean>(true);
+  const [selectedService, setSelectedService] = useState<string>('all');
+  const [selectedMarket, setSelectedMarket] = useState<string>('all');
 
   // Telegram version handlers
 
@@ -93,9 +95,6 @@ const Dashboard: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchHistory();
-  }, [fetchHistory]);
 
   useEffect(() => {
     fetchHistory();
@@ -120,12 +119,6 @@ const Dashboard: React.FC = () => {
         title: <span className="text-slate-200">No</span>,
         key: "no",
         render: (_: string, __: any, index: number) => <Text className="text-slate-300">{index + 1}</Text>,
-      },
-      {
-        title: <span className="text-slate-200">Kind</span>,
-        dataIndex: "kind",
-        key: "kind",
-        render: (text: string) => <Text className="text-slate-300">{text}</Text>,
       },
       {
         title: <span className="text-slate-200">Service</span>,
@@ -154,7 +147,7 @@ const Dashboard: React.FC = () => {
 
             {/* Row 2: Web Version */}
             <Card 
-              title={<span className="text-slate-100 font-semibold">Structured Bet</span>}
+              title={<span className="text-slate-100 font-semibold">Bet</span>}
               className="!bg-slate-800/50 !border-slate-700/50 backdrop-blur-sm shadow-xl"
               headStyle={{ borderBottom: '1px solid rgba(148, 163, 184, 0.2)', background: 'transparent' }}
               bodyStyle={{ background: 'transparent' }}
@@ -166,16 +159,23 @@ const Dashboard: React.FC = () => {
                   pointTolerance={pointTolerance}
                   priceTolerance={priceTolerance}
                   confirmMode={confirmMode}
+                  selectedService={selectedService}
+                  selectedMarket={selectedMarket}
                   onMasterBetAmountChange={(value) => setMasterBetAmount(value || 0)}
                   onPointToleranceChange={(value) => setPointTolerance(value || 0)}
                   onPriceToleranceChange={(value) => setPriceTolerance(value || 0)}
                   onConfirmModeChange={setConfirmMode}
+                  onServiceFilterChange={setSelectedService}
+                  onMarketFilterChange={setSelectedMarket}
                 />
                 <BetForm
                   masterBetAmount={masterBetAmount}
                   pointTolerance={pointTolerance}
                   priceTolerance={priceTolerance}
                   confirmMode={confirmMode}
+                  selectedService={selectedService}
+                  selectedMarket={selectedMarket}
+                  fetchHistory={fetchHistory}
                 />
               </Space>
             </Card>

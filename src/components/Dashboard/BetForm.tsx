@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Input, message, Card, Typography, Tag, Row, Col, Spin, Modal, Button, List, Space, Divider } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
@@ -30,13 +30,19 @@ interface BetFormProps {
     pointTolerance: number;
     priceTolerance: number;
     confirmMode: boolean;
+    selectedService: string;
+    selectedMarket: string;
+    fetchHistory: () => void;
 }
 
 const BetForm: React.FC<BetFormProps> = ({
     masterBetAmount,
     pointTolerance,
     priceTolerance,
-    confirmMode
+    confirmMode,
+    selectedService,
+    selectedMarket,
+    fetchHistory
 }) => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [loading, setLoading] = useState(false);
@@ -60,7 +66,9 @@ const BetForm: React.FC<BetFormProps> = ({
         setLoading(true);
         axios.get(`/general/teams`, {
             params: {
-                search: query
+                search: query,
+                service: selectedService,
+                market: selectedMarket
             }
         }).then(res => {
             setBetData(res.data || []);
@@ -70,8 +78,10 @@ const BetForm: React.FC<BetFormProps> = ({
         }).finally(() => {
             setLoading(false);
         });
-    }, []);
-
+    }, [selectedService, selectedMarket]);
+    useEffect(() => {
+        searchBets(searchQuery);
+    }, [searchBets, searchQuery, selectedService, selectedMarket]);
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearchQuery(value);
@@ -120,6 +130,7 @@ const BetForm: React.FC<BetFormProps> = ({
             window.SM.error(error?.response?.data?.message || "Failed to place bet");
         } finally {
             setPlacing(null);
+            fetchHistory();
             if (confirmModalVisible) {
                 setConfirmModalVisible(false);
                 setConfirmList([]);
@@ -215,8 +226,8 @@ const BetForm: React.FC<BetFormProps> = ({
                                                         {bet.desc}
                                                     </Text>
                                                 </div>
-                                                <Tag color={serviceColors[bet.service.toLowerCase() as keyof typeof serviceColors] || 'blue'} className="m-0">
-                                                    {bet.service.charAt(0).toUpperCase() + bet.service.slice(1)}
+                                                <Tag color={serviceColors[bet.service?.toLowerCase() as keyof typeof serviceColors] || 'blue'} className="m-0">
+                                                    {(bet.service?.charAt(0).toUpperCase() || '') + (bet.service?.slice(1) || '')}
                                                 </Tag>
                                             </div>
 

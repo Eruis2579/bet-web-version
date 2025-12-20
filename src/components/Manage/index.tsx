@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Card, Form, Input, Modal, Select, Space, Table, Tooltip, Typography } from 'antd';
+import { Button, Card, Form, Input, InputNumber, Modal, Select, Space, Table, Tooltip, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import MainLayout from '../CustomComponents/MainLayout';
 import { accountService, Account, AccountPayload } from '../../services/accountService';
@@ -82,9 +82,7 @@ const Manage: React.FC = () => {
         service: record.service,
         username: record.username,
         password: record.password,
-        playerId: record.playerId,
-        profileId: record.profileId,
-        profileLimitId: record.profileLimitId,
+        user_max: record.user_max,
         balance: record.balance,
         available: record.available,
         atrisk: record.atrisk,
@@ -105,7 +103,7 @@ const Manage: React.FC = () => {
           </span>
         ),
         okText: 'Delete',
-        okButtonProps: { 
+        okButtonProps: {
           danger: true,
           className: "!bg-red-500 hover:!bg-red-600 !border-red-500"
         },
@@ -116,18 +114,18 @@ const Manage: React.FC = () => {
         width: '90%',
         style: { maxWidth: '500px' },
         styles: {
-          content: { 
-            backgroundColor: '#1e293b', 
+          content: {
+            backgroundColor: '#1e293b',
             border: '1px solid rgba(148, 163, 184, 0.2)',
             margin: '16px'
           },
-          header: { 
-            backgroundColor: '#1e293b', 
+          header: {
+            backgroundColor: '#1e293b',
             borderBottom: '1px solid rgba(148, 163, 184, 0.2)',
             padding: '16px'
           },
-          footer: { 
-            backgroundColor: '#1e293b', 
+          footer: {
+            backgroundColor: '#1e293b',
             borderTop: '1px solid rgba(148, 163, 184, 0.2)',
             padding: '12px 16px'
           },
@@ -141,9 +139,7 @@ const Manage: React.FC = () => {
               service: record.service,
               username: record.username,
               password: record.password,
-              playerId: record.playerId,
-              profileId: record.profileId,
-              profileLimitId: record.profileLimitId,
+              user_max: record.user_max,
             });
             window.SM?.success?.('Account deleted');
             await loadAccounts();
@@ -172,9 +168,7 @@ const Manage: React.FC = () => {
         service: values.service,
         username: (values.username ?? '').trim(),
         password: (values.password ?? '').trim(),
-        playerId: (values.playerId ?? '').trim(),
-        profileId: (values.profileId ?? '').trim(),
-        profileLimitId: (values.profileLimitId ?? '').trim(),
+        user_max: (values.user_max ?? 0),
       };
 
       try {
@@ -229,6 +223,14 @@ const Manage: React.FC = () => {
         width: 120,
       },
       {
+        title: <span className="text-slate-200">User Max</span>,
+        dataIndex: 'user_max',
+        key: 'user_max',
+        align: 'right',
+        render: (value?: number) => <Text className="text-slate-300 whitespace-nowrap">{numberFormatter(value)}</Text>,
+        width: 100,
+      },
+      {
         title: <span className="text-slate-200">Balance</span>,
         dataIndex: 'balance',
         key: 'balance',
@@ -261,17 +263,17 @@ const Manage: React.FC = () => {
         width: 100,
         render: (_, record) => (
           <Space size="small" direction="vertical" className="sm:!flex-row sm:!space-x-2">
-            <Button 
-              type="link" 
+            <Button
+              type="link"
               onClick={() => handleEditAccount(record)}
               className="!text-emerald-400 hover:!text-emerald-300 !p-0 !h-auto"
               size="small"
             >
               Edit
             </Button>
-            <Button 
-              type="link" 
-              danger 
+            <Button
+              type="link"
+              danger
               onClick={() => handleDeleteAccount(record)}
               className="!text-red-400 hover:!text-red-300 !p-0 !h-auto"
               size="small"
@@ -298,10 +300,10 @@ const Manage: React.FC = () => {
             extra={
               <div className="flex items-center">
                 <Tooltip title="Add Account">
-                  <Button 
-                    type="primary" 
-                    onClick={handleAddAccount} 
-                    icon={<PlusOutlined />} 
+                  <Button
+                    type="primary"
+                    onClick={handleAddAccount}
+                    icon={<PlusOutlined />}
                     size="small"
                     className="sm:!text-base !bg-emerald-500 hover:!bg-emerald-600 !border-emerald-500"
                   >
@@ -310,12 +312,12 @@ const Manage: React.FC = () => {
               </div>
             }
             className="!bg-slate-800/50 !border-slate-700/50 backdrop-blur-sm shadow-xl"
-            headStyle={{ 
-              borderBottom: '1px solid rgba(148, 163, 184, 0.2)', 
+            headStyle={{
+              borderBottom: '1px solid rgba(148, 163, 184, 0.2)',
               background: 'transparent',
               padding: '12px 16px'
             }}
-            bodyStyle={{ 
+            bodyStyle={{
               background: 'transparent',
               padding: '12px 8px sm:16px'
             }}
@@ -326,8 +328,8 @@ const Manage: React.FC = () => {
                 columns={columns}
                 dataSource={accounts}
                 loading={loading}
-                pagination={{ 
-                  pageSize: 10, 
+                pagination={{
+                  pageSize: 10,
                   showSizeChanger: true,
                   className: 'dark-pagination',
                   showTotal: (total) => `Total ${total} accounts`,
@@ -365,18 +367,18 @@ const Manage: React.FC = () => {
           className: "!border-slate-600 !text-slate-300 hover:!border-slate-400 hover:!text-slate-100 !bg-slate-700/50"
         }}
         styles={{
-          content: { 
-            backgroundColor: '#1e293b', 
+          content: {
+            backgroundColor: '#1e293b',
             border: '1px solid rgba(148, 163, 184, 0.2)',
             margin: '16px'
           },
-          header: { 
-            backgroundColor: '#1e293b', 
+          header: {
+            backgroundColor: '#1e293b',
             borderBottom: '1px solid rgba(148, 163, 184, 0.2)',
             padding: '16px'
           },
-          footer: { 
-            backgroundColor: '#1e293b', 
+          footer: {
+            backgroundColor: '#1e293b',
             borderTop: '1px solid rgba(148, 163, 184, 0.2)',
             padding: '12px 16px'
           },
@@ -402,7 +404,7 @@ const Manage: React.FC = () => {
                 label: service,
                 value: service,
               }))}
-              disabled={editingAccount ? true : false} 
+              disabled={editingAccount ? true : false}
               showSearch
               optionFilterProp="label"
               placeholder="Select service"
@@ -422,8 +424,8 @@ const Manage: React.FC = () => {
             rules={[{ required: true, message: 'Username is required' }]}
             className="!mb-3 sm:!mb-4"
           >
-            <Input 
-              disabled={editingAccount ? true : false} 
+            <Input
+              disabled={editingAccount ? true : false}
               placeholder="Enter username"
               className="dark-input w-full"
               size="large"
@@ -441,7 +443,7 @@ const Manage: React.FC = () => {
             rules={[{ required: true, message: 'Password is required' }]}
             className="!mb-3 sm:!mb-4"
           >
-            <Input 
+            <Input
               placeholder="Enter password"
               className="dark-input w-full"
               size="large"
@@ -454,48 +456,16 @@ const Manage: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            name="playerId"
-            label={<span className="text-slate-200 text-sm sm:text-base">Player Id</span>}
+            name="user_max"
+            label={<span className="text-slate-200 text-sm sm:text-base">User Max</span>}
             className="!mb-3 sm:!mb-4"
           >
-            <Input 
-              placeholder="Enter player id"
+            <InputNumber
+              placeholder="Enter user max"
               className="dark-input w-full"
               size="large"
-              style={{
-                backgroundColor: '#334155',
-                borderColor: '#475569',
-                color: '#e2e8f0'
-              }}
-            />
-          </Form.Item>
-
-          <Form.Item
-            name="profileId"
-            label={<span className="text-slate-200 text-sm sm:text-base">Profile Id</span>}
-            className="!mb-3 sm:!mb-4"
-          >
-            <Input 
-              placeholder="Enter profile id"
-              className="dark-input w-full"
-              size="large"
-              style={{
-                backgroundColor: '#334155',
-                borderColor: '#475569',
-                color: '#e2e8f0'
-              }}
-            />
-          </Form.Item>
-
-          <Form.Item
-            name="profileLimitId"
-            label={<span className="text-slate-200 text-sm sm:text-base">Profile Limit Id</span>}
-            className="!mb-0"
-          >
-            <Input 
-              placeholder="Enter profile limit id"
-              className="dark-input w-full"
-              size="large"
+              min={0}
+              step={1}
               style={{
                 backgroundColor: '#334155',
                 borderColor: '#475569',
