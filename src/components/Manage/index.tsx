@@ -312,15 +312,7 @@ const Manage: React.FC = () => {
               </div>
             }
             className="!bg-slate-800/50 !border-slate-700/50 backdrop-blur-sm shadow-xl"
-            headStyle={{
-              borderBottom: '1px solid rgba(148, 163, 184, 0.2)',
-              background: 'transparent',
-              padding: '12px 16px'
-            }}
-            bodyStyle={{
-              background: 'transparent',
-              padding: '12px 8px sm:16px'
-            }}
+            styles={{ header: { borderBottom: '1px solid rgba(148, 163, 184, 0.2)', background: 'transparent', padding: '12px 16px' }, body: { background: 'transparent', padding: '12px 8px sm:16px' } }}
           >
             <div className="overflow-x-auto -mx-2 sm:mx-0">
               <Table

@@ -149,8 +149,8 @@ const Dashboard: React.FC = () => {
             <Card 
               title={<span className="text-slate-100 font-semibold">Bet</span>}
               className="!bg-slate-800/50 !border-slate-700/50 backdrop-blur-sm shadow-xl"
-              headStyle={{ borderBottom: '1px solid rgba(148, 163, 184, 0.2)', background: 'transparent' }}
-              bodyStyle={{ background: 'transparent' }}
+              // styles={{ header: { borderBottom: '1px solid rgba(148, 163, 184, 0.2)', background: 'transparent' } }}
+              styles={{ body: { background: 'transparent' } }}
             >
               <Space direction="vertical" size="large" className='w-full'>
                 {/* Control Panel */}
@@ -197,8 +197,7 @@ const Dashboard: React.FC = () => {
                     </Tooltip>
                 }
                 className="!bg-slate-800/50 !border-slate-700/50 backdrop-blur-sm shadow-xl"
-                headStyle={{ borderBottom: '1px solid rgba(148, 163, 184, 0.2)', background: 'transparent' }}
-                bodyStyle={{ background: 'transparent' }}
+                styles={{ header: { borderBottom: '1px solid rgba(148, 163, 184, 0.2)', background: 'transparent' }, body: { background: 'transparent' } }}
               >
                 <Table
                   columns={historyColumns}

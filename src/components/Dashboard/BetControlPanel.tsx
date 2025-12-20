@@ -34,25 +34,25 @@ const BetControlPanel: React.FC<BetControlPanelProps> = ({
 }) => {
   const services = [
     { value: 'all', label: 'All' },
-    { value: 'abcwager', label: 'Abcwager' },
-    { value: 'action', label: 'Action' },
-    { value: 'betwindycity', label: 'Betwindycity' },
-    { value: 'fesster', label: 'Fesster' },
-    { value: 'godds', label: 'Godds' },
-    { value: 'strikerich', label: 'Strikerich' },
-    { value: 'betservice365', label: 'Betservice365' },
+    { value: 2, label: 'Abcwager' },
+    { value: 5, label: 'Action' },
+    { value: 8, label: 'Betwindycity' },
+    { value: 10, label: 'Fesster' },
+    { value: 13, label: 'Godds' },
+    { value: 14, label: 'Strikerich' },
+    { value: 18, label: 'Betservice365' },
   ];
 
   const markets = [
     { value: 'all', label: 'All' },
-    { value: 'moneyline', label: 'Moneyline' },
-    { value: 'spread', label: 'Spread' },
-    { value: 'total', label: 'Total' },
+    { value: 2, label: 'Moneyline' },
+    { value: 5, label: 'Spread' },
+    { value: 8, label: 'Total' },
   ];
   return (
     <div className="w-full p-6 border border-slate-700/50 rounded-xl mb-4 bg-slate-700/30 backdrop-blur-sm shadow-lg">
       <Row gutter={[16, 16]} align="middle">
-        <Col xs={24} sm={12} md={6}>
+        <Col xs={24} sm={12} md={8} lg={4}>
           <Space direction="vertical" size="small" className="w-full">
             <Text strong className="text-slate-200">Master Bet Amount ($):</Text>
             <InputNumber
@@ -70,7 +70,7 @@ const BetControlPanel: React.FC<BetControlPanelProps> = ({
             />
           </Space>
         </Col>
-        <Col xs={24} sm={12} md={6}>
+        <Col xs={24} sm={12} md={8} lg={4}>
           <Space direction="vertical" size="small" className="w-full">
             <Text strong className="text-slate-200">Point Tolerance:</Text>
             <InputNumber
@@ -89,7 +89,7 @@ const BetControlPanel: React.FC<BetControlPanelProps> = ({
             />
           </Space>
         </Col>
-        <Col xs={24} sm={12} md={6}>
+        <Col xs={24} sm={12} md={8} lg={4}>
           <Space direction="vertical" size="small" className="w-full">
             <Text strong className="text-slate-200">Price Tolerance (Cents):</Text>
             <InputNumber
@@ -107,7 +107,7 @@ const BetControlPanel: React.FC<BetControlPanelProps> = ({
             />
           </Space>
         </Col>
-        <Col xs={24} sm={12} md={6}>
+        <Col xs={24} sm={12} md={8} lg={4}>
           <Space direction="vertical" size="small" className="w-full">
             <Text strong className="text-slate-200">Confirm Mode</Text>
             <Switch
@@ -119,9 +119,7 @@ const BetControlPanel: React.FC<BetControlPanelProps> = ({
             />
           </Space>
         </Col>
-      </Row>
-      <Row gutter={[16, 16]} align="middle" className="mt-4">
-        <Col xs={24} sm={12} md={6}>
+        <Col xs={24} sm={12} md={8} lg={4}>
           <Space direction="vertical" size="small" className="w-full">
             <Text strong className="text-slate-200">Service Filter:</Text>
             <Select
@@ -135,7 +133,7 @@ const BetControlPanel: React.FC<BetControlPanelProps> = ({
             />
           </Space>
         </Col>
-        <Col xs={24} sm={12} md={6}>
+        <Col xs={24} sm={12} md={8} lg={4}>
           <Space direction="vertical" size="small" className="w-full">
             <Text strong className="text-slate-200">Market Filter:</Text>
             <Select

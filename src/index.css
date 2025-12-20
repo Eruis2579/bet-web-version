@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 
-.ant-select-single {
+/* .ant-select-single {
     font-size: 16px;
     height: 56px;
 }
@@ -11,7 +11,7 @@
 .ant-select-single.ant-select-lg {
     font-size: 14px;
     height: 56px;
-}
+} */
 
 /* Dark Mode Styles for Ant Design Components */
 .dark-input .ant-input,
