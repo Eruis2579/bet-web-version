@@ -50,7 +50,6 @@ const Manage: React.FC = () => {
       const data = await accountService.list();
       setAccounts(data);
     } catch (error) {
-      console.error(error);
       window.SM?.error?.(
         typeof error === 'string' ? error : 'Failed to load accounts'
       );
@@ -144,7 +143,6 @@ const Manage: React.FC = () => {
             window.SM?.success?.('Account deleted');
             await loadAccounts();
           } catch (error) {
-            console.error(error);
             window.SM?.error?.(
               typeof error === 'string' ? error : 'Failed to delete account'
             );
@@ -184,7 +182,6 @@ const Manage: React.FC = () => {
         form.resetFields();
         await loadAccounts();
       } catch (error) {
-        console.error(error);
         window.SM?.error?.(
           typeof error === 'string' ? error : 'Failed to save account'
         );
