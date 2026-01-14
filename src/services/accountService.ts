@@ -11,6 +11,7 @@ export interface Account {
   available: number;
   atrisk: number;
   sessionId?: string;
+  proxy?: string;
 }
 
 export type AccountPayload = Omit<Account, 'id'>;

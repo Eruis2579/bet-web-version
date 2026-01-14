@@ -139,6 +139,7 @@ const Manage: React.FC = () => {
               username: record.username,
               password: record.password,
               user_max: record.user_max,
+              proxy: record.proxy,
             });
             window.SM?.success?.('Account deleted');
             await loadAccounts();
@@ -167,6 +168,7 @@ const Manage: React.FC = () => {
         username: (values.username ?? '').trim(),
         password: (values.password ?? '').trim(),
         user_max: (values.user_max ?? 0),
+        proxy: (values.proxy ?? '').trim(),
       };
 
       try {
@@ -455,6 +457,24 @@ const Manage: React.FC = () => {
               size="large"
               min={0}
               step={1}
+              style={{
+                backgroundColor: '#334155',
+                borderColor: '#475569',
+                color: '#e2e8f0'
+              }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="proxy"
+            label={<span className="text-slate-200 text-sm sm:text-base">Proxy Address</span>}
+            rules={[{ required: true, message: 'Proxy address is required' }]}
+            className="!mb-3 sm:!mb-4"
+          >
+            <Input
+              placeholder="Enter proxy address"
+              className="dark-input w-full"
+              size="large"
               style={{
                 backgroundColor: '#334155',
                 borderColor: '#475569',
